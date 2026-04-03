@@ -1,4 +1,4 @@
-import { LinkButton, type LinkButtonProps } from './LinkButton';
+import { LinkButton, type LinkButtonProps } from '@/components/ui';
 
 export const Links = ({ links }: { links: LinkButtonProps[] }) => {
   return (

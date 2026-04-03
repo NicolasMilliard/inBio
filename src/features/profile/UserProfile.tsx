@@ -1,18 +1,11 @@
 import { useAccountStats } from '@lens-protocol/react';
-import { useLensAccount } from '../hooks/useLensAccount';
+import { useLensAccount } from './hooks/useLensAccount';
 
-import { Address } from './Address';
-import { Avatar } from './Avatar';
-import { Banner } from './Banner';
-import { Branding } from './Branding';
-import { Description } from './Description';
-import { Links } from './Links';
-import { Loader } from './Loader';
-import { Statistics } from './Statistics';
+import { Address, Avatar, Loader, type LinkButtonProps } from '@/components/ui';
+import { Banner, Branding, Description, Links, Statistics } from './components';
 
-import type { LinkButtonProps } from './LinkButton';
-
-const MyPage = ({ handleLens }: { handleLens: string }) => {
+const UserProfile = ({ handleLens }: { handleLens: string }) => {
+  console.log(handleLens);
   const { data: account, loading, error } = useLensAccount(handleLens);
 
   const { data: stats } = useAccountStats({
@@ -21,7 +14,10 @@ const MyPage = ({ handleLens }: { handleLens: string }) => {
 
   if (loading) return <Loader />;
 
+  console.log('UserProfile - account :', account);
+
   if (error || !account) {
+    console.error('Error fetching account:', error);
     return (
       <div className="flex min-h-screen items-center justify-center bg-slate-100">
         <p className="text-md text-slate-500">Profile not found.</p>
@@ -45,7 +41,6 @@ const MyPage = ({ handleLens }: { handleLens: string }) => {
   return (
     <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-slate-100">
       <Banner banner={account.banner} />
-
       <main className="relative z-2 flex min-h-screen w-full animate-[riseIn_0.5s_cubic-bezier(0.22,1,0.36,1)_both] flex-col items-center px-6 pt-12 pb-10 sm:my-8 sm:min-h-0 sm:w-105 sm:rounded-3xl sm:border sm:border-slate-200 sm:bg-slate-200/70 sm:px-8 sm:pt-10 sm:pb-8 sm:shadow-[0_8px_48px_rgba(0,0,0,0.12),0_2px_8px_rgba(0,0,0,0.06)] sm:backdrop-blur-xl sm:backdrop-saturate-180">
         <Avatar
           avatar={account.avatar}
@@ -66,4 +61,4 @@ const MyPage = ({ handleLens }: { handleLens: string }) => {
   );
 };
 
-export default MyPage;
+export default UserProfile;

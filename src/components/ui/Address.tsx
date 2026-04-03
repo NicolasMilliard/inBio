@@ -1,4 +1,4 @@
-import { truncateAddress } from '../helpers';
+import { truncateAddress } from '@/helpers';
 
 export const Address = ({ address }: { address: string }) => {
   return (

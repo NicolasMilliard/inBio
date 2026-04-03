@@ -1,6 +1,5 @@
+import UserProfile from '@/features/profile/UserProfile';
 import { createFileRoute, useParams } from '@tanstack/react-router';
-
-import MyPage from '../../components/MyPage';
 
 export const Route = createFileRoute('/$pageId/')({
   component: PageContent,
@@ -9,5 +8,5 @@ export const Route = createFileRoute('/$pageId/')({
 function PageContent() {
   const { pageId } = useParams({ from: '/$pageId/' });
 
-  return <MyPage handleLens={pageId} />;
+  return <UserProfile handleLens={pageId} />;
 }

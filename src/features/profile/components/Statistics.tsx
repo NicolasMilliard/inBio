@@ -1,5 +1,5 @@
-import React from 'react';
-import { formatCount } from '../helpers';
+import { formatCount } from '@/helpers';
+import { Fragment } from 'react';
 
 export const Statistics = ({
   followers,
@@ -17,7 +17,7 @@ export const Statistics = ({
         { value: followers, label: 'Followers' },
         { value: posts, label: 'Posts' },
       ].map(({ value, label }, i) => (
-        <React.Fragment key={label}>
+        <Fragment key={label}>
           {i > 0 && <div className="h-7 w-px shrink-0 bg-slate-400" />}
           <div className="flex flex-1 flex-col items-center gap-0.5">
             <span className="text-base leading-none font-bold tracking-tight text-slate-900">
@@ -27,7 +27,7 @@ export const Statistics = ({
               {label}
             </span>
           </div>
-        </React.Fragment>
+        </Fragment>
       ))}
     </div>
   );

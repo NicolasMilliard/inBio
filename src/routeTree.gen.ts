@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as PageIdRouteRouteImport } from './routes/$pageId/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as EditIndexRouteImport } from './routes/edit/index'
 import { Route as PageIdIndexRouteImport } from './routes/$pageId/index'
 
 const PageIdRouteRoute = PageIdRouteRouteImport.update({
@@ -23,6 +24,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EditIndexRoute = EditIndexRouteImport.update({
+  id: '/edit/',
+  path: '/edit/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PageIdIndexRoute = PageIdIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -33,28 +39,32 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/$pageId': typeof PageIdRouteRouteWithChildren
   '/$pageId/': typeof PageIdIndexRoute
+  '/edit/': typeof EditIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/$pageId': typeof PageIdIndexRoute
+  '/edit': typeof EditIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/$pageId': typeof PageIdRouteRouteWithChildren
   '/$pageId/': typeof PageIdIndexRoute
+  '/edit/': typeof EditIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/$pageId' | '/$pageId/'
+  fullPaths: '/' | '/$pageId' | '/$pageId/' | '/edit/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/$pageId'
-  id: '__root__' | '/' | '/$pageId' | '/$pageId/'
+  to: '/' | '/$pageId' | '/edit'
+  id: '__root__' | '/' | '/$pageId' | '/$pageId/' | '/edit/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   PageIdRouteRoute: typeof PageIdRouteRouteWithChildren
+  EditIndexRoute: typeof EditIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -71,6 +81,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/edit/': {
+      id: '/edit/'
+      path: '/edit'
+      fullPath: '/edit/'
+      preLoaderRoute: typeof EditIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/$pageId/': {
@@ -98,6 +115,7 @@ const PageIdRouteRouteWithChildren = PageIdRouteRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   PageIdRouteRoute: PageIdRouteRouteWithChildren,
+  EditIndexRoute: EditIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
