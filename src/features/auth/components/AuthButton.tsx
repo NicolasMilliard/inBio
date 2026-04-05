@@ -27,6 +27,8 @@ export const AuthButton = () => {
     address: authenticatedUser?.address ?? '',
   });
 
+  console.log(account);
+
   const [open, setOpen] = useState(false);
 
   if (!connection.isConnected) {
