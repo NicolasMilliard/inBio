@@ -4,7 +4,6 @@ const EditProfile = () => {
   return (
     <div>
       <AuthButton />
-      EditProfile
     </div>
   );
 };

@@ -5,7 +5,6 @@ import { Address, Avatar, Loader, type LinkButtonProps } from '@/components/ui';
 import { Banner, Branding, Description, Links, Statistics } from './components';
 
 const UserProfile = ({ handleLens }: { handleLens: string }) => {
-  console.log(handleLens);
   const { data: account, loading, error } = useLensAccount(handleLens);
 
   const { data: stats } = useAccountStats({
@@ -14,10 +13,7 @@ const UserProfile = ({ handleLens }: { handleLens: string }) => {
 
   if (loading) return <Loader />;
 
-  console.log('UserProfile - account :', account);
-
   if (error || !account) {
-    console.error('Error fetching account:', error);
     return (
       <div className="flex min-h-screen items-center justify-center bg-slate-100">
         <p className="text-md text-slate-500">Profile not found.</p>
