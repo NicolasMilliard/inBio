@@ -1,8 +1,19 @@
 import { useAccountStats } from '@lens-protocol/react';
 import { useLensAccount } from './hooks/useLensAccount';
 
-import { Address, Avatar, Loader, type LinkButtonProps } from '@/components/ui';
-import { Banner, Branding, Description, Links, Statistics } from './components';
+import { SpinnerScreen } from '@/components/ui/SpinnerScreen';
+
+import {
+  Address,
+  Avatar,
+  Banner,
+  Branding,
+  Description,
+  Links,
+  NotFoundScreen,
+  Statistics,
+  type LinkButtonProps,
+} from './components';
 
 const UserProfile = ({ handleLens }: { handleLens: string }) => {
   const { data: account, loading, error } = useLensAccount(handleLens);
@@ -11,14 +22,10 @@ const UserProfile = ({ handleLens }: { handleLens: string }) => {
     account: account?.address ?? '',
   });
 
-  if (loading) return <Loader />;
+  if (loading) return <SpinnerScreen text="Loading profile..." />;
 
   if (error || !account) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-slate-100">
-        <p className="text-md text-slate-500">Profile not found.</p>
-      </div>
-    );
+    return <NotFoundScreen handleLens={handleLens} />;
   }
 
   const followers = stats?.graphFollowStats?.followers;

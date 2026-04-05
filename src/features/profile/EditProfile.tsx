@@ -7,6 +7,8 @@ import { StorageClient } from '@lens-chain/storage-client';
 import { chains } from '@lens-chain/sdk/viem';
 import { lensAccountOnly } from '@lens-chain/storage-client';
 
+import { Button } from '@/components/ui/button';
+
 // import { uri } from '@lens-protocol/client';
 // import { setAccountMetadata } from '@lens-protocol/client/actions';
 // import { handleOperationWith } from '@lens-protocol/client/viem';
@@ -41,7 +43,7 @@ const EditProfile = () => {
   //     {
   //       key: 'links.github',
   //       type: MetadataAttributeType.STRING,
-  //       value: 'https://github.com/nicolasmilliard',
+  //       value: 'https://github.com/inBio',
   //     },
   //   ],
   // });
@@ -85,12 +87,7 @@ const EditProfile = () => {
       </div>
 
       <div>
-        <button
-          onClick={uploadJson}
-          className="cursor-pointer rounded bg-slate-800 p-2 text-slate-50 hover:bg-slate-950"
-        >
-          Upload JSON
-        </button>
+        <Button onClick={uploadJson}>Upload JSON</Button>
       </div>
     </div>
   );
