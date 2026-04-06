@@ -11,19 +11,19 @@ export const Statistics = ({
   posts?: number;
 }) => {
   return (
-    <div className="mb-6 flex w-full max-w-85 animate-[fadeUp_0.4s_ease_0.2s_both] items-center rounded-2xl border border-slate-100 bg-slate-50 px-5 py-3">
+    <div className="bg-card flex w-full max-w-xs animate-[fadeUp_0.4s_ease_0.2s_both] items-center rounded-2xl px-5 py-3">
       {[
         { value: following, label: 'Following' },
         { value: followers, label: 'Followers' },
         { value: posts, label: 'Posts' },
       ].map(({ value, label }, i) => (
         <Fragment key={label}>
-          {i > 0 && <div className="h-7 w-px shrink-0 bg-slate-400" />}
+          {i > 0 && <div className="bg-ring h-7 w-px shrink-0" />}
           <div className="flex flex-1 flex-col items-center gap-0.5">
-            <span className="text-base leading-none font-bold tracking-tight text-slate-900">
+            <span className="text-base leading-none font-bold tracking-tight">
               {value !== undefined ? formatCount(value) : '—'}
             </span>
-            <span className="text-[0.6875rem] font-medium tracking-widest text-slate-500 uppercase">
+            <span className="text-muted-foreground text-[0.6875rem] font-medium tracking-wider uppercase">
               {label}
             </span>
           </div>

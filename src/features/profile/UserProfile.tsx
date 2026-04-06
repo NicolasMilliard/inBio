@@ -4,15 +4,13 @@ import { useLensAccount } from './hooks/useLensAccount';
 import { SpinnerScreen } from '@/components/ui/SpinnerScreen';
 
 import {
-  Address,
-  Avatar,
   Banner,
   Branding,
-  Description,
-  Links,
+  Identity,
   NotFoundScreen,
+  SocialLinks,
   Statistics,
-  type LinkButtonProps,
+  WebsiteLink,
 } from './components';
 
 const UserProfile = ({ handleLens }: { handleLens: string }) => {
@@ -32,32 +30,22 @@ const UserProfile = ({ handleLens }: { handleLens: string }) => {
   const following = stats?.graphFollowStats?.following;
   const posts = stats?.feedStats?.posts;
 
-  const links: LinkButtonProps[] = [];
-
-  if (account.website) {
-    links.push({
-      href: account.website,
-      label: account.website.replace(/^https?:\/\//, '').replace(/\/$/, ''),
-    });
-  }
+  const website = account.website
+    ? {
+        href: account.website,
+        label: account.website.replace(/^https?:\/\//, '').replace(/\/$/, ''),
+      }
+    : null;
+  const hasSocialLinks = account.socialLinks && account.socialLinks.length > 0;
 
   return (
-    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-slate-100">
+    <div className="relative flex min-h-screen items-center justify-center overflow-hidden">
       <Banner banner={account.banner} />
-      <main className="relative z-2 flex min-h-screen w-full animate-[riseIn_0.5s_cubic-bezier(0.22,1,0.36,1)_both] flex-col items-center px-6 pt-12 pb-10 sm:my-8 sm:min-h-0 sm:w-105 sm:rounded-3xl sm:border sm:border-slate-200 sm:bg-slate-200/70 sm:px-8 sm:pt-10 sm:pb-8 sm:shadow-[0_8px_48px_rgba(0,0,0,0.12),0_2px_8px_rgba(0,0,0,0.06)] sm:backdrop-blur-xl sm:backdrop-saturate-180">
-        <Avatar
-          avatar={account.avatar}
-          name={account.name}
-          handle={account.handle}
-        />
-        <Description
-          name={account.name}
-          handle={account.handle}
-          bio={account.bio}
-        />
+      <main className="sm:bg-card/55 sm:border-secondary relative z-2 flex min-h-screen w-full animate-[riseIn_0.5s_cubic-bezier(0.22,1,0.36,1)_both] flex-col items-center gap-6 px-6 pt-12 pb-10 sm:my-8 sm:min-h-0 sm:w-105 sm:rounded-3xl sm:border sm:px-8 sm:pt-10 sm:pb-8 sm:shadow-[0_8px_48px_rgba(0,0,0,0.12),0_2px_8px_rgba(0,0,0,0.06)] sm:backdrop-blur-xl sm:backdrop-saturate-180">
+        <Identity account={account} />
         <Statistics followers={followers} following={following} posts={posts} />
-        <Links links={links} />
-        <Address address={account.address} />
+        {hasSocialLinks && <SocialLinks socialLinks={account.socialLinks} />}
+        {website && <WebsiteLink href={website.href} label={website.label} />}
         <Branding />
       </main>
     </div>
