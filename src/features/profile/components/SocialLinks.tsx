@@ -1,6 +1,11 @@
+import type { LensProfile } from '../hooks/useLensAccount';
 import { SOCIAL_CONFIG, type SocialType } from '../model/social.config';
 
-import type { LensProfile } from '../hooks/useLensAccount';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 
 export const SocialLinks = ({
   socialLinks,
@@ -17,16 +22,23 @@ export const SocialLinks = ({
         if (!config) return null;
 
         return (
-          <a
-            key={link.key}
-            href={link.value}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-primary hover:text-chart-2 transition"
-            aria-label={config.label}
-          >
-            {config.icon('size-6')}
-          </a>
+          <Tooltip>
+            <TooltipTrigger>
+              <a
+                key={link.key}
+                href={link.value}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary hover:text-chart-2 transition"
+                aria-label={config.label}
+              >
+                {config.icon('size-6')}
+              </a>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>{config.label}</p>
+            </TooltipContent>
+          </Tooltip>
         );
       })}
     </div>
