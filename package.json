@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@fontsource-variable/dm-sans": "5.2.8",
+    "@hookform/resolvers": "5.2.2",
     "@lens-chain/storage-client": "1.0.6",
     "@lens-protocol/metadata": "2.1.0",
     "@lens-protocol/react": "0.0.0-canary-20250820102520",
@@ -24,6 +25,7 @@
     "radix-ui": "1.4.3",
     "react": "19.2.4",
     "react-dom": "19.2.4",
+    "react-hook-form": "7.72.1",
     "shadcn": "4.1.2",
     "tailwind-merge": "3.5.0",
     "tailwindcss": "4.2.2",
