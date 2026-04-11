@@ -32,7 +32,7 @@ export const WebsiteLink = ({
         href={href}
         target="_blank"
         rel="noopener noreferrer"
-        className="group flex w-full cursor-pointer items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3.5 text-[0.9375rem] font-semibold text-slate-900 no-underline shadow-[0_1px_12px_rgba(0,0,0,0.10),0_1px_2px_rgba(0,0,0,0.06)] transition-all duration-150 hover:-translate-y-px hover:bg-white hover:shadow-[0_4px_20px_rgba(0,0,0,0.12)] active:translate-y-0"
+        className="group border-border bg-background flex w-full cursor-pointer items-center gap-3 rounded-2xl border px-4 py-3.5 text-[0.9375rem] font-semibold no-underline shadow-[0_1px_12px_rgba(0,0,0,0.10),0_1px_2px_rgba(0,0,0,0.06)] transition-all duration-150 hover:-translate-y-px hover:bg-white hover:shadow-[0_4px_20px_rgba(0,0,0,0.12)] active:translate-y-0"
       >
         {imgSrc ? (
           <img

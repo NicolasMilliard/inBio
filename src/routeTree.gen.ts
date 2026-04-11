@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as PageIdRouteRouteImport } from './routes/$pageId/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as EditIndexRouteImport } from './routes/edit/index'
+import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
 import { Route as PageIdIndexRouteImport } from './routes/$pageId/index'
 
 const PageIdRouteRoute = PageIdRouteRouteImport.update({
@@ -29,6 +30,11 @@ const EditIndexRoute = EditIndexRouteImport.update({
   path: '/edit/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DashboardIndexRoute = DashboardIndexRouteImport.update({
+  id: '/dashboard/',
+  path: '/dashboard/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PageIdIndexRoute = PageIdIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -39,11 +45,13 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/$pageId': typeof PageIdRouteRouteWithChildren
   '/$pageId/': typeof PageIdIndexRoute
+  '/dashboard/': typeof DashboardIndexRoute
   '/edit/': typeof EditIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/$pageId': typeof PageIdIndexRoute
+  '/dashboard': typeof DashboardIndexRoute
   '/edit': typeof EditIndexRoute
 }
 export interface FileRoutesById {
@@ -51,19 +59,21 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/$pageId': typeof PageIdRouteRouteWithChildren
   '/$pageId/': typeof PageIdIndexRoute
+  '/dashboard/': typeof DashboardIndexRoute
   '/edit/': typeof EditIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/$pageId' | '/$pageId/' | '/edit/'
+  fullPaths: '/' | '/$pageId' | '/$pageId/' | '/dashboard/' | '/edit/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/$pageId' | '/edit'
-  id: '__root__' | '/' | '/$pageId' | '/$pageId/' | '/edit/'
+  to: '/' | '/$pageId' | '/dashboard' | '/edit'
+  id: '__root__' | '/' | '/$pageId' | '/$pageId/' | '/dashboard/' | '/edit/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   PageIdRouteRoute: typeof PageIdRouteRouteWithChildren
+  DashboardIndexRoute: typeof DashboardIndexRoute
   EditIndexRoute: typeof EditIndexRoute
 }
 
@@ -88,6 +98,13 @@ declare module '@tanstack/react-router' {
       path: '/edit'
       fullPath: '/edit/'
       preLoaderRoute: typeof EditIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard/': {
+      id: '/dashboard/'
+      path: '/dashboard'
+      fullPath: '/dashboard/'
+      preLoaderRoute: typeof DashboardIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/$pageId/': {
@@ -115,6 +132,7 @@ const PageIdRouteRouteWithChildren = PageIdRouteRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   PageIdRouteRoute: PageIdRouteRouteWithChildren,
+  DashboardIndexRoute: DashboardIndexRoute,
   EditIndexRoute: EditIndexRoute,
 }
 export const routeTree = rootRouteImport
