@@ -8,7 +8,9 @@ const RootLayout = () => (
   <>
     <TooltipProvider>
       <AppHeader />
-      <Outlet />
+      <main className="mx-auto flex w-full max-w-6xl flex-col px-4">
+        <Outlet />
+      </main>
     </TooltipProvider>
     <TanStackRouterDevtools />
   </>
