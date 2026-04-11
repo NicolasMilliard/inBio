@@ -1,7 +1,8 @@
 import { createFileRoute } from '@tanstack/react-router';
+import { useConnection } from 'wagmi';
 
 import { Button } from '@/components/ui/button';
-import { AuthButton } from '@/features/auth/components/AuthButton';
+import { AuthScreen } from '@/features/auth/components';
 import { DashboardCard } from '@/features/dashboard/components';
 import { Link } from '@tanstack/react-router';
 
@@ -10,11 +11,16 @@ export const Route = createFileRoute('/dashboard/')({
 });
 
 function RouteComponent() {
+  const connection = useConnection();
+
+  if (!connection.isConnected) {
+    return <AuthScreen />;
+  }
+
   return (
     <div className="space-y-8">
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-semibold">Dashboard</h1>
-        <AuthButton />
       </div>
 
       <section className="grid gap-4 md:grid-cols-2">

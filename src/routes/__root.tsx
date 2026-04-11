@@ -7,10 +7,12 @@ import { AppHeader } from '@/components/layout';
 const RootLayout = () => (
   <>
     <TooltipProvider>
-      <AppHeader />
-      <main className="mx-auto flex w-full max-w-6xl flex-col px-4">
-        <Outlet />
-      </main>
+      <div className="flex min-h-screen flex-col">
+        <AppHeader />
+        <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col">
+          <Outlet />
+        </main>
+      </div>
     </TooltipProvider>
     <TanStackRouterDevtools />
   </>
