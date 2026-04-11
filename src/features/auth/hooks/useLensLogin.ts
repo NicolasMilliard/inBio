@@ -32,6 +32,11 @@ export const useLensLogin = () => {
             },
           };
 
-    return login({ ...payload, signMessage: signMessageWith(signer) });
+    const result = await login({
+      ...payload,
+      signMessage: signMessageWith(signer),
+    });
+
+    return result;
   };
 };

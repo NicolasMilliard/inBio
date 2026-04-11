@@ -7,8 +7,8 @@ import { WagmiProvider } from 'wagmi';
 import { routeTree } from './routeTree.gen.ts';
 
 import { LensProvider } from '@lens-protocol/react';
-import { client } from './providers/client.ts';
-import { wagmiConfig } from './providers/wagmi.ts';
+import { client, wagmiConfig } from './lib';
+import { AuthProvider } from './providers/AuthProvider.tsx';
 
 import './styles/index.css';
 
@@ -27,7 +27,9 @@ createRoot(document.getElementById('root')!).render(
     <WagmiProvider config={wagmiConfig}>
       <QueryClientProvider client={queryClient}>
         <LensProvider client={client}>
-          <RouterProvider router={router} />
+          <AuthProvider>
+            <RouterProvider router={router} />
+          </AuthProvider>
         </LensProvider>
       </QueryClientProvider>
     </WagmiProvider>

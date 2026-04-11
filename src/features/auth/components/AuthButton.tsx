@@ -6,6 +6,7 @@ import {
   useAccount,
   useAccountsAvailable,
   useAuthenticatedUser,
+  useLogout,
 } from '@lens-protocol/react';
 
 import { useLensLogin } from '../hooks/useLensLogin';
@@ -14,6 +15,7 @@ export const AuthButton = () => {
   const connect = useConnect();
   const connection = useConnection();
   const disconnect = useDisconnect();
+  const { execute: lensLogout } = useLogout();
 
   const loginWithLens = useLensLogin();
 
@@ -26,8 +28,6 @@ export const AuthButton = () => {
   const { data: account } = useAccount({
     address: authenticatedUser?.address ?? '',
   });
-
-  console.log(account);
 
   const [open, setOpen] = useState(false);
 
@@ -56,7 +56,9 @@ export const AuthButton = () => {
         </div>
 
         <span className="max-w-30 truncate text-slate-800">
-          {!accounts?.items.length && <p>Aucun compte Lens trouvé</p>}
+          {account?.metadata?.name ??
+            account?.username?.value ??
+            (activeAddress ? `${activeAddress.slice(0, 6)}...` : 'No profile')}
         </span>
 
         <span className="text-xs text-slate-400">▾</span>
@@ -66,11 +68,10 @@ export const AuthButton = () => {
         <div className="absolute right-0 z-50 mt-2 w-64 rounded-xl border border-slate-200 bg-white p-2 shadow-lg">
           <div className="px-2 py-1 text-xs text-slate-400">Lens profiles</div>
 
-          {/* 👤 Accounts */}
           <div className="flex flex-col gap-1">
             {!accounts?.items.length && (
               <div className="px-2 py-2 text-sm text-slate-500">
-                Aucun compte
+                No Lens accounts
               </div>
             )}
 
@@ -112,7 +113,8 @@ export const AuthButton = () => {
 
           <div className="flex flex-col gap-1">
             <button
-              onClick={() => {
+              onClick={async () => {
+                await lensLogout();
                 disconnect.mutate();
                 setOpen(false);
               }}
