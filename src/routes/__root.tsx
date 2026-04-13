@@ -7,9 +7,9 @@ import { AppHeader } from '@/components/layout';
 const RootLayout = () => (
   <>
     <TooltipProvider>
-      <div className="bg-secondary flex min-h-screen flex-col">
+      <div className="bg-secondary min-h-screen">
         <AppHeader />
-        <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col">
+        <main className="mx-auto w-full max-w-6xl">
           <Outlet />
         </main>
       </div>

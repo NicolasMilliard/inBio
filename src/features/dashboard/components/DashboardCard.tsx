@@ -27,8 +27,7 @@ export function DashboardCard({
   return (
     <Card
       className={cn(
-        'border-border bg-background border backdrop-blur-md',
-        'shadow-none',
+        'border-border bg-background border shadow-none backdrop-blur-md',
 
         'relative overflow-hidden',
         'before:absolute before:inset-0 before:rounded-lg',

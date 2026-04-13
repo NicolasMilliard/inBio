@@ -15,7 +15,7 @@ export const SocialLinks = ({
   if (!socialLinks || socialLinks.length === 0) return null;
 
   return (
-    <div className="flex max-w-xs flex-wrap items-center justify-center gap-3">
+    <div className="flex max-w-prose flex-wrap items-center justify-center gap-3">
       {socialLinks.map((link) => {
         const config = SOCIAL_CONFIG[link.type as SocialType];
 

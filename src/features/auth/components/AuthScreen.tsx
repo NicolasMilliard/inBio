@@ -2,12 +2,15 @@ import { AuthButton } from '@/features/auth/components';
 
 export const AuthScreen = () => {
   return (
-    <div className="flex flex-1 flex-col items-center justify-center gap-4">
-      <h1 className="text-3xl">You're not connected.</h1>
-      <p className="max-w-xs">
-        Please connect your wallet to access your dashboard.
+    <section className="mt-20 flex flex-col items-center justify-center gap-6 px-4 text-center">
+      <h1 className="text-3xl font-semibold tracking-tight">
+        Connect your wallet
+      </h1>
+      <p className="text-muted-foreground max-w-md">
+        Access your inBio dashboard by connecting your wallet. Your identity and
+        profiles are linked to it.
       </p>
       <AuthButton />
-    </div>
+    </section>
   );
 };

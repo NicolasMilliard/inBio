@@ -27,7 +27,7 @@ export const WebsiteLink = ({
     : null;
 
   return (
-    <div className="mb-5 flex w-full max-w-xs animate-[fadeUp_0.4s_ease_0.25s_both] flex-col gap-4">
+    <div className="mb-5 flex w-full max-w-prose animate-[fadeUp_0.4s_ease_0.25s_both] flex-col gap-4">
       <a
         href={href}
         target="_blank"

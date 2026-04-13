@@ -11,7 +11,7 @@ export const Statistics = ({
   posts?: number;
 }) => {
   return (
-    <div className="bg-card flex w-full max-w-xs animate-[fadeUp_0.4s_ease_0.2s_both] items-center rounded-2xl px-5 py-3">
+    <div className="bg-card flex w-full max-w-prose animate-[fadeUp_0.4s_ease_0.2s_both] items-center rounded-2xl px-5 py-3">
       {[
         { value: following, label: 'Following' },
         { value: followers, label: 'Followers' },

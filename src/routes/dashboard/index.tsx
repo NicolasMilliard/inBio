@@ -24,10 +24,8 @@ function RouteComponent() {
   }
 
   return (
-    <div className="space-y-8">
-      <div className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold">Dashboard</h1>
-      </div>
+    <div className="mt-20 flex flex-col gap-8 px-4">
+      <h1 className="text-3xl font-semibold tracking-tight">Dashboard</h1>
 
       <section className="grid gap-4 md:grid-cols-2">
         <DashboardCard
