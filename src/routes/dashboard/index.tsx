@@ -1,8 +1,9 @@
+import { useAuthenticatedUser } from '@lens-protocol/react';
 import { createFileRoute } from '@tanstack/react-router';
 import { useConnection } from 'wagmi';
 
 import { Button } from '@/components/ui/button';
-import { AuthScreen } from '@/features/auth/components';
+import { AuthScreen, ProfileSelectionScreen } from '@/features/auth/components';
 import { DashboardCard } from '@/features/dashboard/components';
 import { Link } from '@tanstack/react-router';
 
@@ -12,9 +13,14 @@ export const Route = createFileRoute('/dashboard/')({
 
 function RouteComponent() {
   const connection = useConnection();
+  const { data: authenticatedUser } = useAuthenticatedUser();
 
   if (!connection.isConnected) {
     return <AuthScreen />;
+  }
+
+  if (!authenticatedUser) {
+    return <ProfileSelectionScreen />;
   }
 
   return (

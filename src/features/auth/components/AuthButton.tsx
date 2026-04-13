@@ -14,24 +14,41 @@ import { useLensLogin } from '../hooks/useLensLogin';
 import { Button } from '@/components/ui/button';
 
 export const AuthButton = () => {
+  const [open, setOpen] = useState(false);
+  const [isDisconnecting, setIsDisconnecting] = useState(false);
+
   const connect = useConnect();
   const connection = useConnection();
   const disconnect = useDisconnect();
   const { execute: lensLogout } = useLogout();
 
   const loginWithLens = useLensLogin();
-
   const { data: accounts } = useAccountsAvailable({
     managedBy: connection.address,
   });
-
   const { data: authenticatedUser } = useAuthenticatedUser();
-
   const { data: account } = useAccount({
     address: authenticatedUser?.address ?? '',
   });
 
-  const [open, setOpen] = useState(false);
+  const handleDisconnect = async () => {
+    // Guard against double-click
+    if (isDisconnecting) return;
+    setIsDisconnecting(true);
+    setOpen(false);
+
+    try {
+      // Log out of Lens
+      await lensLogout();
+
+      // Disconnect the wallet
+      await disconnect.mutateAsync();
+    } catch (error) {
+      console.error('[AuthButton] disconnect error:', error);
+    } finally {
+      setIsDisconnecting(false);
+    }
+  };
 
   if (!connection.isConnected) {
     return (
@@ -113,14 +130,11 @@ export const AuthButton = () => {
 
           <div className="flex flex-col gap-1">
             <button
-              onClick={async () => {
-                await lensLogout();
-                disconnect.mutate();
-                setOpen(false);
-              }}
+              onClick={handleDisconnect}
+              disabled={isDisconnecting}
               className="text-foreground hover:bg-secondary w-full rounded-lg px-2 py-2 text-left text-sm"
             >
-              Disconnect wallet
+              {isDisconnecting ? 'Disconnecting...' : 'Disconnect wallet'}
             </button>
           </div>
         </div>
