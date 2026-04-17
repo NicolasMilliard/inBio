@@ -11,7 +11,7 @@ import {
 
 import { useLensLogin } from '../hooks/useLensLogin';
 
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui';
 
 export const AuthButton = () => {
   const [open, setOpen] = useState(false);

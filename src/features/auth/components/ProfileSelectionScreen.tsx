@@ -2,8 +2,7 @@ import { useAccountsAvailable } from '@lens-protocol/react';
 import { useConnection } from 'wagmi';
 import { useLensLogin } from '../hooks/useLensLogin';
 
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Card } from '@/components/ui/card';
+import { Avatar, AvatarFallback, AvatarImage, Card } from '@/components/ui';
 import { cn } from '@/lib/utils';
 
 export const ProfileSelectionScreen = () => {

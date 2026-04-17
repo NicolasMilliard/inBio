@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router';
 
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui';
 import { AuthGuard } from '@/features/auth/components';
 import { DashboardCard } from '@/features/dashboard/components';
 import { Link } from '@tanstack/react-router';

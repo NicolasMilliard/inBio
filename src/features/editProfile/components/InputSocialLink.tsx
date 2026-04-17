@@ -1,14 +1,12 @@
-import { Field } from '@/components/ui/field';
 import {
+  Field,
   InputGroup,
   InputGroupAddon,
   InputGroupInput,
-} from '@/components/ui/input-group';
-import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from '@/components/ui/tooltip';
+} from '@/components/ui';
 
 export const InputSocialLink = ({
   label,

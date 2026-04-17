@@ -1,4 +1,4 @@
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui';
 import { Link } from '@tanstack/react-router';
 
 export const NotFoundScreen = ({ handleLens }: { handleLens: string }) => {

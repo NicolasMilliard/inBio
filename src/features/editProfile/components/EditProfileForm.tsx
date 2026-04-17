@@ -23,8 +23,10 @@ import {
   type SocialType,
 } from '@/features/profile/model/social.config';
 
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui';
 import { InputSocialLink } from './InputSocialLink';
+
+import { SocialLinksForm } from './SocialLinksForm';
 
 const socialLinkSchema = z.object({
   type: z.string(),
@@ -37,7 +39,7 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
-export const Form = () => {
+export const EditProfileForm = () => {
   const { data: sessionClient } = useSessionClient();
   const { data: walletClient } = useWalletClient();
   const { data: authenticatedUser } = useAuthenticatedUser();
@@ -133,6 +135,7 @@ export const Form = () => {
       onSubmit={form.handleSubmit(onSubmit)}
       className="grid max-w-2xl grid-cols-2 gap-4"
     >
+      <SocialLinksForm />
       {fields.map((field, index) => {
         const config = SOCIAL_CONFIG[field.type as SocialType];
 

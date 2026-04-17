@@ -1,7 +1,7 @@
 import { useAccountStats } from '@lens-protocol/react';
 import { useLensAccount } from './hooks/useLensAccount';
 
-import { SpinnerScreen } from '@/components/ui/SpinnerScreen';
+import { SpinnerScreen } from '@/components/ui';
 
 import {
   Banner,
