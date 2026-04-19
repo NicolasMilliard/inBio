@@ -18,13 +18,9 @@ import { useFieldArray, useForm } from 'react-hook-form';
 import { useWalletClient } from 'wagmi';
 import { z } from 'zod';
 
-import {
-  SOCIAL_CONFIG,
-  type SocialType,
-} from '@/features/profile/model/social.config';
+import { SOCIAL_CONFIG } from '@/features/profile/model/social.config';
 
 import { Button } from '@/components/ui';
-import { InputSocialLink } from './InputSocialLink';
 
 import { SocialLinksForm } from './SocialLinksForm';
 
@@ -131,12 +127,9 @@ export const EditProfileForm = () => {
   }, [account, form]);
 
   return (
-    <form
-      onSubmit={form.handleSubmit(onSubmit)}
-      className="grid max-w-2xl grid-cols-2 gap-4"
-    >
+    <form onSubmit={form.handleSubmit(onSubmit)}>
       <SocialLinksForm />
-      {fields.map((field, index) => {
+      {/* {fields.map((field, index) => {
         const config = SOCIAL_CONFIG[field.type as SocialType];
 
         return (
@@ -157,7 +150,7 @@ export const EditProfileForm = () => {
             </button>
           </div>
         );
-      })}
+      })} */}
       <Button type="submit" className="col-span-2">
         Save
       </Button>

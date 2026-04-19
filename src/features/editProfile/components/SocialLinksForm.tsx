@@ -1,160 +1,32 @@
-import { Check, ChevronDown, ExternalLink, X } from 'lucide-react';
-import type { ComponentType } from 'react';
 import { useState } from 'react';
+import {
+  MAX_VISIBLE_BADGES,
+  POPULAR_SOCIAL_PLATFORMS,
+  SOCIAL_MAP,
+  SOCIAL_PLATFORMS,
+  type SocialValue,
+} from '../constants';
 
 import {
-  BlueskyIcon,
-  DiscordIcon,
-  FacebookIcon,
-  FarcasterIcon,
-  GithubIcon,
-  InstagramIcon,
-  MastodonIcon,
-  ThreadsIcon,
-  TikTokIcon,
-  TwitchIcon,
-  TwitterIcon,
-  YouTubeIcon,
-} from '@/components/icons';
-
-import { Button } from '@/components/ui/button';
-import {
+  Button,
   Command,
   CommandEmpty,
   CommandGroup,
   CommandInput,
   CommandItem,
-} from '@/components/ui/command';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import {
+  CommandSeparator,
+  Input,
+  Label,
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from '@/components/ui/popover';
-
-type SocialValue =
-  | 'discord'
-  | 'farcaster'
-  | 'instagram'
-  | 'twitter'
-  | 'threads'
-  | 'twitch'
-  | 'youtube'
-  | 'bluesky'
-  | 'github'
-  | 'facebook'
-  | 'mastodon'
-  | 'tiktok';
-
-type SocialPlatform = {
-  value: SocialValue;
-  label: string;
-  Icon: ComponentType<{ className?: string }>;
-  placeholder: string;
-  urlPrefix: string;
-};
-
-const SOCIAL_PLATFORMS: SocialPlatform[] = [
-  {
-    value: 'discord',
-    label: 'Discord',
-    Icon: DiscordIcon,
-    placeholder: 'discord.gg/yourserver',
-    urlPrefix: 'https://discord.gg/',
-  },
-  {
-    value: 'farcaster',
-    label: 'Farcaster',
-    Icon: FarcasterIcon,
-    placeholder: 'farcaster.xyz/yourhandle',
-    urlPrefix: 'https://farcaster.xyz/',
-  },
-  {
-    value: 'instagram',
-    label: 'Instagram',
-    Icon: InstagramIcon,
-    placeholder: 'instagram.com/yourhandle',
-    urlPrefix: 'https://instagram.com/',
-  },
-  {
-    value: 'twitter',
-    label: 'Twitter',
-    Icon: TwitterIcon,
-    placeholder: 'x.com/yourhandle',
-    urlPrefix: 'https://x.com/',
-  },
-  {
-    value: 'threads',
-    label: 'Threads',
-    Icon: ThreadsIcon,
-    placeholder: 'threads.net/@yourhandle',
-    urlPrefix: 'https://threads.net/@',
-  },
-  {
-    value: 'twitch',
-    label: 'Twitch',
-    Icon: TwitchIcon,
-    placeholder: 'twitch.tv/yourhandle',
-    urlPrefix: 'https://twitch.tv/',
-  },
-  {
-    value: 'youtube',
-    label: 'YouTube',
-    Icon: YouTubeIcon,
-    placeholder: 'youtube.com/@yourchannel',
-    urlPrefix: 'https://youtube.com/@',
-  },
-  {
-    value: 'bluesky',
-    label: 'Bluesky',
-    Icon: BlueskyIcon,
-    placeholder: 'bsky.app/profile/yourhandle',
-    urlPrefix: 'https://bsky.app/profile/',
-  },
-  {
-    value: 'github',
-    label: 'GitHub',
-    Icon: GithubIcon,
-    placeholder: 'github.com/yourhandle',
-    urlPrefix: 'https://github.com/',
-  },
-  {
-    value: 'facebook',
-    label: 'Facebook',
-    Icon: FacebookIcon,
-    placeholder: 'facebook.com/yourpage',
-    urlPrefix: 'https://facebook.com/',
-  },
-  {
-    value: 'mastodon',
-    label: 'Mastodon',
-    Icon: MastodonIcon,
-    placeholder: 'mastodon.social/@yourhandle',
-    urlPrefix: 'https://mastodon.social/@',
-  },
-  {
-    value: 'tiktok',
-    label: 'TikTok',
-    Icon: TikTokIcon,
-    placeholder: 'tiktok.com/@yourhandle',
-    urlPrefix: 'https://tiktok.com/@',
-  },
-];
-
-const SOCIAL_MAP = Object.fromEntries(
-  SOCIAL_PLATFORMS.map((item) => [item.value, item]),
-) as Record<SocialValue, SocialPlatform>;
-
-// How many pill badges to show before collapsing into "+ N more"
-const MAX_VISIBLE_BADGES = 2;
+} from '@/components/ui';
+import { Check, ChevronDown, ExternalLink, X } from 'lucide-react';
 
 export const SocialLinksForm = () => {
   const [open, setOpen] = useState(false);
-  const [selected, setSelected] = useState<SocialValue[]>([
-    'facebook',
-    'threads',
-  ]);
+  // TODO: Get default values from user metadata and initialize state accordingly
+  const [selected, setSelected] = useState<SocialValue[]>([]);
   const [links, setLinks] = useState<Partial<Record<SocialValue, string>>>({});
 
   const toggleSelection = (value: SocialValue) => {
@@ -191,10 +63,10 @@ export const SocialLinksForm = () => {
             variant="outline"
             role="combobox"
             aria-expanded={open}
-            className="h-10 w-full justify-between gap-2 px-3"
+            className="h-12 w-fit max-w-md min-w-xs"
           >
             {/* Left: badges or placeholder */}
-            <div className="flex min-w-0 flex-1 items-center gap-1.5 overflow-hidden">
+            <div className="flex flex-1 items-center gap-3 overflow-hidden">
               {selected.length === 0 ? (
                 <span className="text-muted-foreground text-sm">
                   Add social media…
@@ -206,14 +78,14 @@ export const SocialLinksForm = () => {
                     return (
                       <span
                         key={value}
-                        className="bg-muted text-foreground inline-flex shrink-0 items-center gap-1 rounded-md px-2 py-0.5 text-xs font-medium"
+                        className="bg-secondary-foreground text-secondary inline-flex shrink-0 items-center gap-2 rounded-xl px-3 py-1.5"
                       >
-                        <Icon className="text-primary size-3.5" />
+                        <Icon className="size-4" />
                         {label}
                         <button
                           type="button"
                           aria-label={`Remove ${label}`}
-                          className="text-muted-foreground hover:text-foreground ml-0.5 transition-colors"
+                          className="text-secondary hover:bg-destructive ml-0.5 cursor-pointer rounded-full p-0.5 transition-colors"
                           onClick={(e) => {
                             e.stopPropagation();
                             removeSelection(value);
@@ -256,7 +128,33 @@ export const SocialLinksForm = () => {
           <Command>
             <CommandInput placeholder="Search platforms…" className="h-9" />
             <CommandEmpty>No platform found.</CommandEmpty>
-            <CommandGroup className="max-h-64 overflow-y-auto">
+            <CommandGroup
+              heading="Popular"
+              className="max-h-64 overflow-y-auto"
+            >
+              {POPULAR_SOCIAL_PLATFORMS.map(({ value, label, Icon }) => {
+                const isSelected = selected.includes(value);
+                return (
+                  <CommandItem
+                    key={value}
+                    value={label}
+                    onSelect={() => toggleSelection(value)}
+                    className="cursor-pointer gap-2"
+                  >
+                    <Icon className="text-primary size-4 shrink-0" />
+                    <span className="flex-1 text-sm">{label}</span>
+                    <Check
+                      className={`size-4 transition-opacity ${isSelected ? 'opacity-100' : 'opacity-0'}`}
+                    />
+                  </CommandItem>
+                );
+              })}
+            </CommandGroup>
+            <CommandSeparator />
+            <CommandGroup
+              heading="All Platforms"
+              className="max-h-64 overflow-y-auto"
+            >
               {SOCIAL_PLATFORMS.map(({ value, label, Icon }) => {
                 const isSelected = selected.includes(value);
                 return (
