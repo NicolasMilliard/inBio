@@ -78,7 +78,7 @@ export const SocialLinksForm = () => {
                     return (
                       <span
                         key={value}
-                        className="bg-secondary-foreground text-secondary inline-flex shrink-0 items-center gap-2 rounded-xl px-3 py-1.5"
+                        className="bg-primary text-primary-foreground inline-flex shrink-0 items-center gap-2 rounded-xl px-3 py-1.5"
                       >
                         <Icon className="size-4" />
                         {label}
