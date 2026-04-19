@@ -9,7 +9,7 @@ export const AppHeader = () => {
   const isHome = !!matchRoute({ to: '/' });
 
   return (
-    <header className="bg-background w-full border-b">
+    <header className="w-full">
       <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4">
         <Link to="/">
           <div className="flex items-center gap-2 font-semibold">

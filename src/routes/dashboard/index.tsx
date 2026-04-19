@@ -14,7 +14,6 @@ function RouteComponent() {
     <AuthGuard>
       <div className="mt-20 flex flex-col gap-8 px-4">
         <h1 className="text-3xl font-semibold tracking-tight">Dashboard</h1>
-
         <section className="grid gap-4 md:grid-cols-2">
           <DashboardCard
             title="Edit your Profile"
