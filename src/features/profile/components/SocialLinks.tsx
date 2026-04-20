@@ -1,4 +1,4 @@
-import type { LensProfile } from '../hooks/useLensAccount';
+import type { LensProfile } from '@/helpers';
 import { SOCIAL_CONFIG, type SocialType } from '../model/social.config';
 
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui';

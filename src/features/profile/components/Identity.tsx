@@ -1,6 +1,5 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui';
-
-import type { LensProfile } from '../hooks/useLensAccount';
+import type { LensProfile } from '@/helpers';
 
 export const Identity = ({ account }: { account: LensProfile }) => {
   const { avatar, name, handle, bio } = account;

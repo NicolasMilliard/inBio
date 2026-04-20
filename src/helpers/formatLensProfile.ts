@@ -1,4 +1,4 @@
-import { useAccount, type Account } from '@lens-protocol/react';
+import { type Account } from '@lens-protocol/react';
 
 export type LensProfile = {
   handle?: string;
@@ -15,7 +15,7 @@ export type LensProfile = {
   }>;
 };
 
-const mapAccountData = (account: Account): LensProfile => {
+export const formatLensProfile = (account: Account): LensProfile => {
   const attributes = account.metadata?.attributes ?? [];
   const website = attributes.find((a) => a.key === 'website')?.value;
 
@@ -35,14 +35,5 @@ const mapAccountData = (account: Account): LensProfile => {
         type: a.key.split('.')[1],
         value: a.value,
       })),
-  };
-};
-
-export const useLensAccount = (handleLens: string) => {
-  const query = useAccount({ username: { localName: handleLens } });
-
-  return {
-    ...query,
-    data: query.data ? mapAccountData(query.data) : null,
   };
 };
