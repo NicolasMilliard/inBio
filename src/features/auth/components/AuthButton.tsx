@@ -1,22 +1,24 @@
-import { useState } from 'react';
-import { useConnect, useConnection, useDisconnect } from 'wagmi';
-import { injected } from 'wagmi/connectors';
-
 import {
   useAccount,
   useAccountsAvailable,
   useAuthenticatedUser,
   useLogout,
 } from '@lens-protocol/react';
-
+import { useConnect, useConnection, useDisconnect } from 'wagmi';
+import { injected } from 'wagmi/connectors';
 import { useLensLogin } from '../hooks/useLensLogin';
 
-import { Button } from '@/components/ui';
+import {
+  Button,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui';
 
 export const AuthButton = () => {
-  const [open, setOpen] = useState(false);
-  const [isDisconnecting, setIsDisconnecting] = useState(false);
-
   const connect = useConnect();
   const connection = useConnection();
   const disconnect = useDisconnect();
@@ -32,21 +34,11 @@ export const AuthButton = () => {
   });
 
   const handleDisconnect = async () => {
-    // Guard against double-click
-    if (isDisconnecting) return;
-    setIsDisconnecting(true);
-    setOpen(false);
-
     try {
-      // Log out of Lens
       await lensLogout();
-
-      // Disconnect the wallet
       await disconnect.mutateAsync();
     } catch (error) {
       console.error('[AuthButton] disconnect error:', error);
-    } finally {
-      setIsDisconnecting(false);
     }
   };
 
@@ -62,83 +54,68 @@ export const AuthButton = () => {
   }
 
   const activeAddress = authenticatedUser?.address?.toLowerCase();
+  const displayName =
+    account?.metadata?.name ??
+    account?.username?.value ??
+    (activeAddress ? `${activeAddress.slice(0, 6)}...` : 'No profile selected');
+  const avatarLetter = account?.metadata?.name?.[0]?.toUpperCase() ?? 'U';
 
   return (
-    <div className="relative inline-block text-left">
-      <Button onClick={() => setOpen((prev) => !prev)}>
-        <div className="bg-muted text-muted-foreground flex h-6 w-6 items-center justify-center rounded-full text-xs font-medium">
-          {account?.metadata?.name?.[0]?.toUpperCase() ?? 'U'}
-        </div>
-
-        <span className="max-w-30 truncate">
-          {account?.metadata?.name ??
-            account?.username?.value ??
-            (activeAddress
-              ? `${activeAddress.slice(0, 6)}...`
-              : 'No profile selected')}
-        </span>
-
-        <span className="text-xs">▾</span>
-      </Button>
-
-      {open && (
-        <div className="border-border bg-background absolute right-0 z-50 mt-2 w-64 rounded-xl border p-2 shadow-lg">
-          <div className="text-ring px-2 py-1 text-xs">Lens profiles</div>
-
-          <div className="flex flex-col gap-1">
-            {!accounts?.items.length && (
-              <div className="text-ring px-2 py-2 text-sm">
-                No Lens accounts
-              </div>
-            )}
-
-            {accounts?.items.map((item) => {
-              const isActive =
-                activeAddress === item.account.address.toLowerCase();
-
-              return (
-                <button
-                  key={item.account.address}
-                  onClick={() => {
-                    loginWithLens(item);
-                    setOpen(false);
-                  }}
-                  className={`flex items-center gap-2 rounded-lg px-2 py-2 text-sm transition ${
-                    isActive
-                      ? 'text-foreground bg-secondary'
-                      : 'text-foreground hover:bg-secondary'
-                  }`}
-                >
-                  <div className="bg-background text-foreground flex h-5 w-5 items-center justify-center rounded-full text-xs">
-                    {item.account.username?.value?.[0]?.toUpperCase() ?? 'U'}
-                  </div>
-
-                  <span className="truncate">
-                    {item.account.username?.value ??
-                      item.account.address.slice(0, 6) + '...'}
-                  </span>
-
-                  {isActive && (
-                    <span className="text-ring ml-auto text-xs">✓</span>
-                  )}
-                </button>
-              );
-            })}
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button>
+          <div className="bg-muted text-muted-foreground flex h-6 w-6 items-center justify-center rounded-full text-xs font-medium">
+            {avatarLetter}
           </div>
+          <span className="max-w-30 truncate">{displayName}</span>
+          <span className="text-xs">▾</span>
+        </Button>
+      </DropdownMenuTrigger>
 
-          <div className="bg-border my-2 h-px" />
+      <DropdownMenuContent align="end" className="w-64">
+        <DropdownMenuLabel className="text-ring text-xs font-normal">
+          Lens profiles
+        </DropdownMenuLabel>
 
-          <div className="flex flex-col gap-1">
-            <button
-              onClick={handleDisconnect}
-              disabled={isDisconnecting}
-              className="text-foreground hover:bg-secondary w-full rounded-lg px-2 py-2 text-left text-sm"
-            >
-              {isDisconnecting ? 'Disconnecting...' : 'Disconnect wallet'}
-            </button>
-          </div>
-        </div>
-      )}
-    </div>
+        {!accounts?.items.length ? (
+          <DropdownMenuItem disabled className="text-ring text-sm">
+            No Lens accounts
+          </DropdownMenuItem>
+        ) : (
+          accounts.items.map((item) => {
+            const isActive =
+              activeAddress === item.account.address.toLowerCase();
+            const label =
+              item.account.username?.value ??
+              `${item.account.address.slice(0, 6)}...`;
+
+            return (
+              <DropdownMenuItem
+                key={item.account.address}
+                onClick={() => !isActive && loginWithLens(item)}
+                className={`gap-2 ${isActive ? 'cursor-default' : 'cursor-pointer'}`}
+              >
+                <div className="bg-background text-foreground flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-xs">
+                  {label[0]?.toUpperCase() ?? 'U'}
+                </div>
+                <span className="truncate">{label}</span>
+                {isActive && (
+                  <span className="text-ring ml-auto text-xs">✓</span>
+                )}
+              </DropdownMenuItem>
+            );
+          })
+        )}
+
+        <DropdownMenuSeparator />
+
+        <DropdownMenuItem
+          onClick={handleDisconnect}
+          className="text-destructive hover:bg-destructive! hover:text-primary-foreground! cursor-pointer"
+        >
+          Disconnect wallet
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 };
