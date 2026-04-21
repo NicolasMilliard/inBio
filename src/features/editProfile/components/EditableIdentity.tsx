@@ -2,7 +2,13 @@ import type { LensProfile } from '@/helpers';
 import { useRef, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui';
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+  Input,
+  Textarea,
+} from '@/components/ui';
 
 type IdentityFormValues = {
   avatar?: File;
@@ -40,7 +46,6 @@ export const EditableIdentity = ({ profile }: { profile: LensProfile }) => {
   return (
     <div className="flex flex-col items-center gap-3 text-center">
       <button
-        type="button"
         onClick={openFilePicker}
         className="cursor-pointer rounded-full transition hover:opacity-60 focus:ring-2 focus:outline-none"
       >
@@ -65,14 +70,20 @@ export const EditableIdentity = ({ profile }: { profile: LensProfile }) => {
       />
 
       <div className="flex animate-[fadeUp_0.3s_ease_0.15s_both] flex-col items-center">
-        {name && (
-          <h1 className="text-[1.375rem] leading-tight font-bold">{name}</h1>
-        )}
-        {bio && (
-          <p className="mt-2 max-w-prose leading-relaxed tracking-tight">
-            {bio}
-          </p>
-        )}
+        <Input
+          name="name"
+          placeholder="Enter your name"
+          defaultValue={name ?? ''}
+          className="hover:bg-accent/30 w-fit cursor-pointer bg-transparent text-center text-[1.375rem] leading-tight font-bold"
+        />
+        <Textarea
+          name="bio"
+          rows={1}
+          className="hover:bg-accent/30 placeholder:text-muted-foreground focus:border-secondary mt-2 w-fit max-w-prose cursor-pointer resize-none overflow-hidden rounded-md bg-transparent text-center leading-relaxed tracking-tight focus:ring-0"
+          placeholder="Write something about yourself in your bio to let people know more about you."
+        >
+          {bio}
+        </Textarea>
       </div>
     </div>
   );
