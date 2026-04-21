@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useFieldArray, useFormContext } from 'react-hook-form';
 import {
   MAX_VISIBLE_BADGES,
   POPULAR_SOCIAL_PLATFORMS,
@@ -23,36 +24,59 @@ import {
 } from '@/components/ui';
 import { Check, ChevronDown, ExternalLink, X } from 'lucide-react';
 
+type FormValues = {
+  socialLinks: Array<{ type: string; url: string }>;
+};
+
 export const SocialLinksForm = () => {
   const [open, setOpen] = useState(false);
-  // TODO: Get default values from user metadata and initialize state accordingly
-  const [selected, setSelected] = useState<SocialValue[]>([]);
-  const [links, setLinks] = useState<Partial<Record<SocialValue, string>>>({});
 
-  const toggleSelection = (value: SocialValue) => {
-    setSelected((prev) =>
-      prev.includes(value)
-        ? prev.filter((item) => item !== value)
-        : [...prev, value],
-    );
-  };
+  const { control, watch } = useFormContext<FormValues>();
+  const { fields, update } = useFieldArray({
+    control,
+    name: 'socialLinks',
+  });
+  const socialLinks = watch('socialLinks');
 
-  const removeSelection = (value: SocialValue) => {
-    setSelected((prev) => prev.filter((item) => item !== value));
-    setLinks((prev) => {
-      const next = { ...prev };
-      delete next[value];
+  // We need a separate toggled set for platforms the user has opened but not yet filled
+  const [toggled, setToggled] = useState<Set<string>>(new Set());
+  const isSelected = (type: string) => toggled.has(type);
+
+  const togglePlatform = (value: SocialValue) => {
+    setToggled((prev) => {
+      const next = new Set(prev);
+      if (next.has(value)) {
+        next.delete(value);
+        // Clear the url when deselecting
+        const idx = fields.findIndex((f) => f.type === value);
+        if (idx !== -1) update(idx, { type: value, url: '' });
+      } else {
+        next.add(value);
+      }
       return next;
     });
   };
 
-  const handleLinkChange = (value: SocialValue, url: string) => {
-    setLinks((prev) => ({ ...prev, [value]: url }));
+  const removePlatform = (value: SocialValue) => {
+    setToggled((prev) => {
+      const next = new Set(prev);
+      next.delete(value);
+      return next;
+    });
+    const idx = fields.findIndex((f) => f.type === value);
+    if (idx !== -1) update(idx, { type: value, url: '' });
   };
 
-  // Badges: show up to MAX_VISIBLE_BADGES, then a "+N more" counter
-  const visibleBadges = selected.slice(0, MAX_VISIBLE_BADGES);
-  const overflowCount = selected.length - MAX_VISIBLE_BADGES;
+  const handleLinkChange = (value: SocialValue, url: string) => {
+    const idx = fields.findIndex((f) => f.type === value);
+    if (idx !== -1) update(idx, { type: value, url });
+  };
+
+  const getLinkUrl = (value: SocialValue) =>
+    socialLinks.find((l) => l.type === value)?.url ?? '';
+
+  const visibleBadges = [...toggled].slice(0, MAX_VISIBLE_BADGES);
+  const overflowCount = toggled.size - MAX_VISIBLE_BADGES;
 
   return (
     <div className="space-y-4">
@@ -67,14 +91,14 @@ export const SocialLinksForm = () => {
           >
             {/* Left: badges or placeholder */}
             <div className="flex flex-1 items-center gap-3 overflow-hidden">
-              {selected.length === 0 ? (
+              {toggled.size === 0 ? (
                 <span className="text-muted-foreground text-sm">
                   Add social media…
                 </span>
               ) : (
                 <>
                   {visibleBadges.map((value) => {
-                    const { Icon, label } = SOCIAL_MAP[value];
+                    const { Icon, label } = SOCIAL_MAP[value as SocialValue];
                     return (
                       <span
                         key={value}
@@ -88,7 +112,7 @@ export const SocialLinksForm = () => {
                           className="text-secondary hover:bg-destructive ml-0.5 cursor-pointer rounded-full p-0.5 transition-colors"
                           onClick={(e) => {
                             e.stopPropagation();
-                            removeSelection(value);
+                            removePlatform(value as SocialValue);
                           }}
                         >
                           <X className="size-3" />
@@ -108,9 +132,9 @@ export const SocialLinksForm = () => {
 
             {/* Right: count badge + chevron */}
             <div className="flex shrink-0 items-center gap-1.5">
-              {selected.length > 0 && (
+              {toggled.size > 0 && (
                 <span className="bg-primary text-primary-foreground flex h-5 w-5 items-center justify-center rounded-full text-[10px] font-semibold">
-                  {selected.length}
+                  {toggled.size}
                 </span>
               )}
               <ChevronDown
@@ -133,18 +157,17 @@ export const SocialLinksForm = () => {
               className="max-h-64 overflow-y-auto"
             >
               {POPULAR_SOCIAL_PLATFORMS.map(({ value, label, Icon }) => {
-                const isSelected = selected.includes(value);
                 return (
                   <CommandItem
                     key={value}
                     value={label}
-                    onSelect={() => toggleSelection(value)}
+                    onSelect={() => togglePlatform(value)}
                     className="cursor-pointer gap-2"
                   >
                     <Icon className="text-primary size-4 shrink-0" />
                     <span className="flex-1 text-sm">{label}</span>
                     <Check
-                      className={`size-4 transition-opacity ${isSelected ? 'opacity-100' : 'opacity-0'}`}
+                      className={`size-4 transition-opacity ${isSelected(value) ? 'opacity-100' : 'opacity-0'}`}
                     />
                   </CommandItem>
                 );
@@ -156,18 +179,17 @@ export const SocialLinksForm = () => {
               className="max-h-64 overflow-y-auto"
             >
               {SOCIAL_PLATFORMS.map(({ value, label, Icon }) => {
-                const isSelected = selected.includes(value);
                 return (
                   <CommandItem
                     key={value}
                     value={label}
-                    onSelect={() => toggleSelection(value)}
+                    onSelect={() => togglePlatform(value)}
                     className="cursor-pointer gap-2"
                   >
                     <Icon className="text-primary size-4 shrink-0" />
                     <span className="flex-1 text-sm">{label}</span>
                     <Check
-                      className={`size-4 transition-opacity ${isSelected ? 'opacity-100' : 'opacity-0'}`}
+                      className={`size-4 transition-opacity ${isSelected(value) ? 'opacity-100' : 'opacity-0'}`}
                     />
                   </CommandItem>
                 );
@@ -178,10 +200,13 @@ export const SocialLinksForm = () => {
       </Popover>
 
       {/* ── Link inputs — rendered in selection order ── */}
-      {selected.length > 0 && (
+      {toggled.size > 0 && (
         <div className="space-y-3">
-          {selected.map((value) => {
-            const { Icon, label, placeholder } = SOCIAL_MAP[value];
+          {[...toggled].map((value) => {
+            const { Icon, label, placeholder } =
+              SOCIAL_MAP[value as SocialValue];
+            const url = getLinkUrl(value as SocialValue);
+
             return (
               <div key={value} className="space-y-1.5">
                 <Label
@@ -196,13 +221,15 @@ export const SocialLinksForm = () => {
                     id={`social-${value}`}
                     type="url"
                     placeholder={placeholder}
-                    value={links[value] ?? ''}
-                    onChange={(e) => handleLinkChange(value, e.target.value)}
+                    value={url}
+                    onChange={(e) =>
+                      handleLinkChange(value as SocialValue, e.target.value)
+                    }
                     className="pr-9"
                   />
-                  {links[value] && (
+                  {url && (
                     <a
-                      href={links[value]}
+                      href={url}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-muted-foreground hover:text-foreground absolute top-1/2 right-2.5 -translate-y-1/2 transition-colors"

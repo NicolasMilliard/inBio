@@ -79,11 +79,10 @@ export const EditableIdentity = ({ profile }: { profile: LensProfile }) => {
         <Textarea
           {...register('bio')}
           rows={1}
+          defaultValue={bio ?? undefined}
           className="hover:bg-accent/30 placeholder:text-muted-foreground focus:border-secondary mt-2 w-fit max-w-prose cursor-pointer resize-none overflow-hidden rounded-md bg-transparent text-center leading-relaxed tracking-tight focus:ring-0"
           placeholder="Write something about yourself in your bio to let people know more about you."
-        >
-          {bio}
-        </Textarea>
+        />
       </div>
     </div>
   );
