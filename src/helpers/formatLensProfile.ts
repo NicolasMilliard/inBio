@@ -1,18 +1,16 @@
+import { type MetadataAttribute } from '@lens-protocol/metadata';
 import { type Account } from '@lens-protocol/react';
 
 export type LensProfile = {
-  handle?: string;
-  banner?: string;
+  handle: string;
+  banner?: string | null;
   avatar?: string;
   name?: string | null;
   bio?: string | null;
-  address?: string;
+  address: `0x${string}`;
   website?: string;
-  socialLinks?: Array<{
-    key: string;
-    type: string;
-    value: string;
-  }>;
+  attributes?: MetadataAttribute[];
+  socialLinks?: Array<{ type: string; key: string; value: string }>;
 };
 
 export const formatLensProfile = (account: Account): LensProfile => {
@@ -27,12 +25,15 @@ export const formatLensProfile = (account: Account): LensProfile => {
     bio: account.metadata?.bio,
     address: account.address,
     website,
+    attributes: attributes.filter(
+      (a) => a.key !== 'website' && !a.key.startsWith('links.'),
+    ),
     socialLinks: attributes
       // replace links by socialLinks
       .filter((a) => a.key.startsWith('links.'))
       .map((a) => ({
+        type: a.key.slice('links.'.length),
         key: a.key,
-        type: a.key.split('.')[1],
         value: a.value,
       })),
   };

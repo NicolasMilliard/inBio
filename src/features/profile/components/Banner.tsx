@@ -1,6 +1,6 @@
 // For now, banner is equal to coverPicture. Later, it will be the fallback value
 
-export const Banner = ({ banner }: { banner?: string }) => {
+export const Banner = ({ banner }: { banner?: string | null }) => {
   return (
     <>
       {banner && (

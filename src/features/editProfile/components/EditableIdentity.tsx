@@ -19,7 +19,7 @@ type IdentityFormValues = {
 export const EditableIdentity = ({ profile }: { profile: LensProfile }) => {
   const { avatar, name, handle, bio } = profile;
 
-  const { setValue } = useFormContext<IdentityFormValues>();
+  const { setValue, register } = useFormContext<IdentityFormValues>();
   const inputRef = useRef<HTMLInputElement>(null);
 
   const [preview, setPreview] = useState<string | null>(avatar ?? null);
@@ -46,6 +46,7 @@ export const EditableIdentity = ({ profile }: { profile: LensProfile }) => {
   return (
     <div className="flex flex-col items-center gap-3 text-center">
       <button
+        type="button"
         onClick={openFilePicker}
         className="cursor-pointer rounded-full transition hover:opacity-60 focus:ring-2 focus:outline-none"
       >
@@ -71,13 +72,12 @@ export const EditableIdentity = ({ profile }: { profile: LensProfile }) => {
 
       <div className="flex animate-[fadeUp_0.3s_ease_0.15s_both] flex-col items-center">
         <Input
-          name="name"
+          {...register('name')}
           placeholder="Enter your name"
-          defaultValue={name ?? ''}
           className="hover:bg-accent/30 w-fit cursor-pointer bg-transparent text-center text-[1.375rem] leading-tight font-bold"
         />
         <Textarea
-          name="bio"
+          {...register('bio')}
           rows={1}
           className="hover:bg-accent/30 placeholder:text-muted-foreground focus:border-secondary mt-2 w-fit max-w-prose cursor-pointer resize-none overflow-hidden rounded-md bg-transparent text-center leading-relaxed tracking-tight focus:ring-0"
           placeholder="Write something about yourself in your bio to let people know more about you."

@@ -1,26 +1,25 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { chains } from '@lens-chain/sdk/viem';
 import { lensAccountOnly, StorageClient } from '@lens-chain/storage-client';
-import { uri } from '@lens-protocol/client';
-import { setAccountMetadata } from '@lens-protocol/client/actions';
-import { handleOperationWith } from '@lens-protocol/client/viem';
+// import { uri } from '@lens-protocol/client';
+// import { setAccountMetadata } from '@lens-protocol/client/actions';
+// import { handleOperationWith } from '@lens-protocol/client/viem';
 import {
   account as createMetadata,
   MetadataAttributeType,
 } from '@lens-protocol/metadata';
-import {
-  useAccount,
-  useAuthenticatedUser,
-  useSessionClient,
-} from '@lens-protocol/react';
+import { useSessionClient } from '@lens-protocol/react';
 import { useEffect } from 'react';
-import { useFieldArray, useForm } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 import { useWalletClient } from 'wagmi';
 import { z } from 'zod';
+
+import { type LensProfile } from '@/helpers';
 
 import { SOCIAL_CONFIG } from '@/features/profile/model/social.config';
 
 import { Button } from '@/components/ui';
+import { EditableIdentity } from './EditableIdentity';
 
 import { SocialLinksForm } from './SocialLinksForm';
 
@@ -30,54 +29,58 @@ const socialLinkSchema = z.object({
 });
 
 const formSchema = z.object({
-  links: z.array(socialLinkSchema),
+  avatar: z.union([z.instanceof(File), z.url(), z.literal('')]).optional(),
+  name: z.string(),
+  bio: z.string().optional(),
+  socialLinks: z.array(socialLinkSchema),
 });
 
 type FormValues = z.infer<typeof formSchema>;
 
-export const EditProfileForm = () => {
+export const EditProfileForm = ({ profile }: { profile: LensProfile }) => {
+  const { avatar, name, bio } = profile;
+
   const { data: sessionClient } = useSessionClient();
   const { data: walletClient } = useWalletClient();
-  const { data: authenticatedUser } = useAuthenticatedUser();
-  const { data: account } = useAccount({
-    address: authenticatedUser?.address ?? '',
-  });
+  // const { data: authenticatedUser } = useAuthenticatedUser();
+  // const { data: account } = useAccount({
+  //   address: authenticatedUser?.address ?? '',
+  // });
 
   const storageClient = StorageClient.create();
-  const acl = lensAccountOnly(account?.address, chains.mainnet.id);
+  const acl = lensAccountOnly(profile.address, chains.mainnet.id);
 
-  const form = useForm<FormValues>({
+  const methods = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      links: Object.keys(SOCIAL_CONFIG).map((key) => ({ type: key, url: '' })),
+      avatar: avatar ?? '',
+      name: name ?? '',
+      bio: bio ?? '',
+      socialLinks: Object.keys(SOCIAL_CONFIG).map((key) => ({
+        type: key,
+        url: '',
+      })),
     },
   });
 
-  const { fields } = useFieldArray({
-    control: form.control,
-    name: 'links',
-  });
-
   const onSubmit = async (values: FormValues) => {
-    if (!sessionClient || !walletClient || !account) return;
+    console.log('values', values);
+    if (!sessionClient || !walletClient) return;
 
     // 1. Liens remplis par l'utilisateur
-    const validLinks = values.links.filter(
+    const validLinks = values.socialLinks.filter(
       (l): l is { type: string; url: string } => !!l.url?.trim(),
     );
 
     // 2. Attributs existants NON-links (website, location, etc.) qu'on conserve
-    const nonLinkAttributes =
-      account.metadata?.attributes
-        ?.filter((attr) => !attr.key.startsWith('links.'))
-        .map((attr) => ({
-          key: attr.key,
-          type: attr.type,
-          value: attr.value,
-        })) ?? [];
+    const nonLinkAttributes = profile?.attributes ?? [];
 
     // 3. Nouveaux attributs links (seuls les valides = suppression implicite des vides)
-    const linkAttributes = validLinks.map((l) => ({
+    const linkAttributes: Array<{
+      key: string;
+      type: MetadataAttributeType.STRING;
+      value: string;
+    }> = validLinks.map((l) => ({
       key: `links.${l.type}`,
       type: MetadataAttributeType.STRING,
       value: l.url.trim(),
@@ -88,27 +91,27 @@ export const EditProfileForm = () => {
 
     // 5. `attributes` est omis si vide, car le builder exige NonEmptyArray
     const data = createMetadata({
-      name: account.metadata?.name ?? 'inBio',
-      bio: account.metadata?.bio ?? undefined,
+      name: values.name || profile.name || undefined,
+      bio: values.bio || profile.bio || undefined,
       ...(allAttributes.length > 0 && { attributes: allAttributes }),
     });
 
     console.log(JSON.stringify(data, null, 2));
 
-    const response = await storageClient.uploadAsJson(data, { acl });
+    // const response = await storageClient.uploadAsJson(data, { acl });
     // console.log('response', response);
 
-    const result = await setAccountMetadata(sessionClient, {
-      metadataUri: uri(response.uri),
-    }).andThen(handleOperationWith(walletClient));
-    console.log(result);
+    // const result = await setAccountMetadata(sessionClient, {
+    //   metadataUri: uri(response.uri),
+    // }).andThen(handleOperationWith(walletClient));
+    // console.log(result);
   };
 
   useEffect(() => {
-    if (!account) return;
+    if (!profile) return;
 
     const existingLinks =
-      account.metadata?.attributes
+      profile.attributes
         ?.filter((attr) => attr.key.startsWith('links.'))
         .map((attr) => ({
           type: attr.key.replace('links.', ''),
@@ -123,37 +126,18 @@ export const EditProfileForm = () => {
       };
     });
 
-    form.reset({ links: defaultValues });
-  }, [account, form]);
+    methods.reset({ socialLinks: defaultValues });
+  }, [profile, methods]);
 
   return (
-    <form onSubmit={form.handleSubmit(onSubmit)}>
-      <SocialLinksForm />
-      {/* {fields.map((field, index) => {
-        const config = SOCIAL_CONFIG[field.type as SocialType];
-
-        return (
-          <div key={field.id} className="flex items-center gap-2">
-            <InputSocialLink
-              label={config.label}
-              placeholer={config.placeholder}
-              icon={config.icon('size-6')}
-              {...form.register(`links.${index}.url`)}
-            />
-
-            <button
-              type="button"
-              onClick={() => form.setValue(`links.${index}.url`, '')}
-              className="text-red-500 transition hover:text-red-700"
-            >
-              -
-            </button>
-          </div>
-        );
-      })} */}
-      <Button type="submit" className="col-span-2">
-        Save
-      </Button>
-    </form>
+    <FormProvider {...methods}>
+      <form onSubmit={methods.handleSubmit(onSubmit)}>
+        <EditableIdentity profile={profile} />
+        <SocialLinksForm />
+        <Button type="submit" className="col-span-2">
+          Save
+        </Button>
+      </form>
+    </FormProvider>
   );
 };

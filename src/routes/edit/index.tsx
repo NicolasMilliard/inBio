@@ -10,7 +10,7 @@ import { SpinnerScreen } from '@/components/ui';
 import { AuthGuard } from '@/features/auth/components';
 import {
   EditableField,
-  EditableIdentity,
+  EditProfileForm,
 } from '@/features/editProfile/components';
 import {
   Banner,
@@ -20,8 +20,6 @@ import {
   Statistics,
   WebsiteLink,
 } from '@/features/profile/components';
-
-import { FormProvider, useForm } from 'react-hook-form';
 
 export const Route = createFileRoute('/edit/')({
   component: RouteComponent,
@@ -39,10 +37,6 @@ function RouteComponent() {
   const { data: stats } = useAccountStats({
     account: account?.address ?? '',
   });
-
-  const methods = useForm();
-
-  console.log('Account Data:', account);
 
   if (loading) return <SpinnerScreen text="Loading profile..." />;
 
@@ -64,46 +58,34 @@ function RouteComponent() {
 
   return (
     <AuthGuard>
-      <FormProvider {...methods}>
-        <div className="relative flex min-h-screen items-center justify-center overflow-hidden">
-          <Banner banner={profile.banner} />
-          <section className="sm:bg-card/55 sm:border-secondary relative z-2 flex min-h-screen w-full animate-[riseIn_0.5s_cubic-bezier(0.22,1,0.36,1)_both] flex-col items-center gap-6 px-6 pt-12 pb-10 sm:my-8 sm:min-h-0 sm:w-105 sm:rounded-3xl sm:border sm:px-8 sm:pt-10 sm:pb-8 sm:shadow-[0_8px_48px_rgba(0,0,0,0.12),0_2px_8px_rgba(0,0,0,0.06)] sm:backdrop-blur-xl sm:backdrop-saturate-180">
-            <EditableIdentity profile={profile} />
+      <div className="relative flex min-h-screen items-center justify-center overflow-hidden">
+        <Banner banner={profile.banner} />
+        <section className="sm:bg-card/55 sm:border-secondary relative z-2 flex min-h-screen w-full animate-[riseIn_0.5s_cubic-bezier(0.22,1,0.36,1)_both] flex-col items-center gap-6 px-6 pt-12 pb-10 sm:my-8 sm:min-h-0 sm:w-105 sm:rounded-3xl sm:border sm:px-8 sm:pt-10 sm:pb-8 sm:shadow-[0_8px_48px_rgba(0,0,0,0.12),0_2px_8px_rgba(0,0,0,0.06)] sm:backdrop-blur-xl sm:backdrop-saturate-180">
+          <EditProfileForm profile={profile} />
+          <EditableField
+            asChild
+            onEdit={() => alert('Edit Statistics')}
+            label="Edit Statistics"
+          >
+            <Statistics
+              followers={followers}
+              following={following}
+              posts={posts}
+            />
+          </EditableField>
 
-            <EditableField
-              asChild
-              onEdit={() => alert('Edit Statistics')}
-              label="Edit Statistics"
-            >
-              <Statistics
-                followers={followers}
-                following={following}
-                posts={posts}
-              />
-            </EditableField>
+          <EditableField
+            asChild
+            onEdit={() => alert('Edit Social links')}
+            label="Edit Social links"
+          >
+            <SocialLinks socialLinks={profile.socialLinks} />
+          </EditableField>
 
-            <EditableField
-              asChild
-              onEdit={() => alert('Edit Social links')}
-              label="Edit Social links"
-            >
-              <SocialLinks socialLinks={profile.socialLinks} />
-            </EditableField>
-
-            {website && (
-              <WebsiteLink href={website.href} label={website.label} />
-            )}
-            <Branding />
-          </section>
-        </div>
-      </FormProvider>
-
-      {/* <div className="mt-20 flex flex-col gap-8 px-4">
-        <h1 className="text-3xl font-semibold tracking-tight">
-          Edit your Profile
-        </h1>
-        <EditProfileForm />
-      </div> */}
+          {website && <WebsiteLink href={website.href} label={website.label} />}
+          <Branding />
+        </section>
+      </div>
     </AuthGuard>
   );
 }
