@@ -1,8 +1,8 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui';
 import type { LensProfile } from '@/helpers';
 
-export const Identity = ({ account }: { account: LensProfile }) => {
-  const { avatar, name, handle, bio } = account;
+export const Identity = ({ profile }: { profile: LensProfile }) => {
+  const { avatar, name, handle, bio } = profile;
 
   return (
     <div className="flex flex-col items-center gap-3 text-center">
