@@ -2,50 +2,40 @@ import {
   SOCIAL_CONFIG,
   type SocialType,
 } from '@/features/profile/model/social.config';
-import type { LensProfile } from '@/helpers';
+import { useFormContext, useWatch } from 'react-hook-form';
 
-import {
-  Button,
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui';
-import { Plus } from 'lucide-react';
 import { SocialLinkForm } from './SocialLinkForm';
 
-export const EditableSocialLinks = ({
-  socialLinks,
-}: {
-  socialLinks: LensProfile['socialLinks'];
-}) => {
-  if (!socialLinks || socialLinks.length === 0) return null;
+// TODO: import this type from a common file
+type FormValues = {
+  socialLinks: Array<{ type: string; url: string }>;
+};
+
+export const EditableSocialLinks = () => {
+  const { control } = useFormContext<FormValues>();
+  const socialLinks = useWatch({ control, name: 'socialLinks' });
+
+  // Show platforms that have a non-empty url OR have been toggled open (url can be empty but type is present)
+  const activeLinks = socialLinks.filter((l) => l.url.trim() !== '');
+
+  if (activeLinks.length === 0) return null;
 
   return (
     <div className="flex max-w-prose flex-wrap items-center justify-center gap-3">
-      {socialLinks.map((link) => {
+      {activeLinks.map((link) => {
         const config = SOCIAL_CONFIG[link.type as SocialType];
 
         if (!config) return null;
 
         return (
           <SocialLinkForm
-            key={link.key}
+            key={link.type}
             icon={config.icon('size-6')}
             label={config.label}
-            value={link.value}
+            type={link.type}
           />
         );
       })}
-      <Popover>
-        <PopoverTrigger asChild>
-          <Button role="button" variant="outline">
-            <Plus size={24} />
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent>
-          <p>Add social media link</p>
-        </PopoverContent>
-      </Popover>
     </div>
   );
 };

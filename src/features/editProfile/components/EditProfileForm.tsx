@@ -17,7 +17,7 @@ import { useWalletClient } from 'wagmi';
 import { z } from 'zod';
 
 import { Button } from '@/components/ui';
-import { EditableIdentity, EditableSocialLinks } from './index';
+import { AddSocialLink, EditableIdentity, EditableSocialLinks } from './index';
 import { SocialLinksForm } from './SocialLinksForm';
 
 const storageClient = StorageClient.create();
@@ -48,33 +48,23 @@ export const EditProfileForm = ({ profile }: { profile: LensProfile }) => {
       avatar: profile.avatar ?? '',
       name: profile.name ?? '',
       bio: profile.bio ?? '',
-      socialLinks: Object.keys(SOCIAL_CONFIG).map((key) => ({
-        type: key,
-        url: '',
-      })),
+      socialLinks: Object.keys(SOCIAL_CONFIG).map((key) => {
+        const existing = profile.socialLinks?.find((l) => l.type === key);
+        return { type: key, url: existing?.value ?? '' };
+      }),
     },
   });
   const { reset } = methods;
 
   useEffect(() => {
     // TODO: replace links with socialLinks
-    const existingLinks =
-      profile.attributes
-        ?.filter((attr) => attr.key.startsWith('links.'))
-        .map((attr) => ({
-          type: attr.key.replace('links.', ''),
-          url: attr.value,
-        })) ?? [];
-
-    const defaultValues = Object.keys(SOCIAL_CONFIG).map((key) => {
-      const existing = existingLinks.find((l) => l.type === key);
-      return {
-        type: key,
-        url: existing?.url ?? '',
-      };
-    });
-
-    reset({ socialLinks: defaultValues });
+    reset((prev) => ({
+      ...prev,
+      socialLinks: Object.keys(SOCIAL_CONFIG).map((key) => {
+        const existing = profile.socialLinks?.find((l) => l.type === key);
+        return { type: key, url: existing?.value ?? '' };
+      }),
+    }));
   }, [profile, reset]);
 
   const onSubmit = async (values: FormValues) => {
@@ -124,9 +114,15 @@ export const EditProfileForm = ({ profile }: { profile: LensProfile }) => {
 
   return (
     <FormProvider {...methods}>
-      <form onSubmit={methods.handleSubmit(onSubmit)}>
+      <form
+        onSubmit={methods.handleSubmit(onSubmit)}
+        className="flex flex-col gap-4"
+      >
         <EditableIdentity profile={profile} />
-        <EditableSocialLinks socialLinks={profile.socialLinks} />
+        <div className="flex justify-center gap-2">
+          <EditableSocialLinks />
+          <AddSocialLink />
+        </div>
         <SocialLinksForm socialLinks={profile.socialLinks} />
         <Button type="submit">Save</Button>
       </form>

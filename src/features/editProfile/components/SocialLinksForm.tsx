@@ -1,5 +1,5 @@
 import type { SocialLink } from '@/helpers';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useFieldArray, useFormContext } from 'react-hook-form';
 import {
   MAX_VISIBLE_BADGES,
@@ -48,10 +48,6 @@ export const SocialLinksForm = ({
   // We need a separate toggled set for platforms the user has opened but not yet filled
   const [toggled, setToggled] = useState<Set<string>>(new Set());
   const isSelected = (type: string) => toggled.has(type);
-
-  useEffect(() => {
-    console.log('toggled', toggled);
-  }, [toggled]);
 
   const togglePlatform = (value: SocialValue) => {
     setToggled((prev) => {
