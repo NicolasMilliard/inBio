@@ -106,8 +106,7 @@ export const SocialLinksForm = () => {
                       >
                         <Icon className="size-4" />
                         {label}
-                        <button
-                          type="button"
+                        <span
                           aria-label={`Remove ${label}`}
                           className="text-secondary hover:bg-destructive ml-0.5 cursor-pointer rounded-full p-0.5 transition-colors"
                           onClick={(e) => {
@@ -116,7 +115,7 @@ export const SocialLinksForm = () => {
                           }}
                         >
                           <X className="size-3" />
-                        </button>
+                        </span>
                       </span>
                     );
                   })}

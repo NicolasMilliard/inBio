@@ -78,6 +78,7 @@ export const EditProfileForm = ({ profile }: { profile: LensProfile }) => {
   }, [profile, reset]);
 
   const onSubmit = async (values: FormValues) => {
+    console.log(values);
     if (!sessionClient || !walletClient) return;
 
     // 1. Upload avatar if it's a new File
