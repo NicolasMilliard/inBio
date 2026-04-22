@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import type { SocialLink } from '@/helpers';
+import { useEffect, useState } from 'react';
 import { useFieldArray, useFormContext } from 'react-hook-form';
 import {
   MAX_VISIBLE_BADGES,
@@ -28,19 +29,29 @@ type FormValues = {
   socialLinks: Array<{ type: string; url: string }>;
 };
 
-export const SocialLinksForm = () => {
+export const SocialLinksForm = ({
+  socialLinks,
+}: {
+  socialLinks?: SocialLink[];
+}) => {
   const [open, setOpen] = useState(false);
+
+  console.log('socialLinks', socialLinks);
 
   const { control, watch } = useFormContext<FormValues>();
   const { fields, update } = useFieldArray({
     control,
     name: 'socialLinks',
   });
-  const socialLinks = watch('socialLinks');
+  const socialLinksForm = watch('socialLinks');
 
   // We need a separate toggled set for platforms the user has opened but not yet filled
   const [toggled, setToggled] = useState<Set<string>>(new Set());
   const isSelected = (type: string) => toggled.has(type);
+
+  useEffect(() => {
+    console.log('toggled', toggled);
+  }, [toggled]);
 
   const togglePlatform = (value: SocialValue) => {
     setToggled((prev) => {
@@ -73,7 +84,7 @@ export const SocialLinksForm = () => {
   };
 
   const getLinkUrl = (value: SocialValue) =>
-    socialLinks.find((l) => l.type === value)?.url ?? '';
+    socialLinksForm.find((l) => l.type === value)?.url ?? '';
 
   const visibleBadges = [...toggled].slice(0, MAX_VISIBLE_BADGES);
   const overflowCount = toggled.size - MAX_VISIBLE_BADGES;

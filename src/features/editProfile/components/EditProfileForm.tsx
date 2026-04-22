@@ -17,7 +17,7 @@ import { useWalletClient } from 'wagmi';
 import { z } from 'zod';
 
 import { Button } from '@/components/ui';
-import { EditableIdentity } from './EditableIdentity';
+import { EditableIdentity, EditableSocialLinks } from './index';
 import { SocialLinksForm } from './SocialLinksForm';
 
 const storageClient = StorageClient.create();
@@ -126,7 +126,8 @@ export const EditProfileForm = ({ profile }: { profile: LensProfile }) => {
     <FormProvider {...methods}>
       <form onSubmit={methods.handleSubmit(onSubmit)}>
         <EditableIdentity profile={profile} />
-        <SocialLinksForm />
+        <EditableSocialLinks socialLinks={profile.socialLinks} />
+        <SocialLinksForm socialLinks={profile.socialLinks} />
         <Button type="submit">Save</Button>
       </form>
     </FormProvider>

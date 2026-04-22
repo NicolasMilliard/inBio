@@ -1,6 +1,12 @@
 import { type MetadataAttribute } from '@lens-protocol/metadata';
 import { type Account } from '@lens-protocol/react';
 
+export type SocialLink = {
+  type: string;
+  key: string;
+  value: string;
+};
+
 export type LensProfile = {
   handle: string;
   banner?: string | null;
@@ -10,7 +16,7 @@ export type LensProfile = {
   address: `0x${string}`;
   website?: string;
   attributes?: MetadataAttribute[];
-  socialLinks?: Array<{ type: string; key: string; value: string }>;
+  socialLinks?: SocialLink[];
 };
 
 export const formatLensProfile = (account: Account): LensProfile => {
