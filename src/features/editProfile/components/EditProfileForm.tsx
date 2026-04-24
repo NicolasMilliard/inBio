@@ -1,3 +1,8 @@
+/**
+ * TODO: Handle errors (e.g. invalid URL, upload failure, transaction failure)
+ * TODO: Show loading states for upload and transaction
+ */
+
 import { SOCIAL_CONFIG } from '@/features/profile/model/social.config';
 import { type LensProfile, toMetadataAttribute } from '@/helpers';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -17,15 +22,17 @@ import { useWalletClient } from 'wagmi';
 import { z } from 'zod';
 
 import { Button } from '@/components/ui';
-import { AddSocialLink, EditableIdentity, EditableSocialLinks } from './index';
-import { SocialLinksForm } from './SocialLinksForm';
+import { EditableIdentity } from './EditableIdentity';
+import { AddSocialIconLink, EditableSocialIcons } from './socialIcons';
 
 const storageClient = StorageClient.create();
 
 const socialLinkSchema = z.object({
   type: z.string(),
-  url: z.url().optional().or(z.literal('')),
+  url: z.url().or(z.literal('')),
 });
+
+export type SocialLink = z.infer<typeof socialLinkSchema>;
 
 const formSchema = z.object({
   avatar: z.union([z.instanceof(File), z.url(), z.literal('')]).optional(),
@@ -67,7 +74,6 @@ export const EditProfileForm = ({ profile }: { profile: LensProfile }) => {
   }, [profile, reset]);
 
   const onSubmit = async (values: FormValues) => {
-    console.log(values);
     if (!sessionClient || !walletClient) return;
 
     // 1. Upload avatar if it's a new File
@@ -90,12 +96,8 @@ export const EditProfileForm = ({ profile }: { profile: LensProfile }) => {
       }));
     const nonManagedAttributes = (profile.attributes ?? [])
       .filter((a) => !a.key.startsWith('socialLinks.'))
-      .map(toMetadataAttribute); // ← re-narrow the GraphQL objects into the discriminated union
+      .map(toMetadataAttribute);
     const allAttributes = [...nonManagedAttributes, ...linkAttributes];
-
-    console.log('values', values);
-    console.log('profile', profile);
-    console.log('allAttributes', allAttributes);
 
     // 3. Create metadata object
     const data = createMetadata({
@@ -126,10 +128,9 @@ export const EditProfileForm = ({ profile }: { profile: LensProfile }) => {
       >
         <EditableIdentity profile={profile} />
         <div className="flex justify-center gap-2">
-          <EditableSocialLinks />
-          <AddSocialLink />
+          <EditableSocialIcons />
+          <AddSocialIconLink />
         </div>
-        <SocialLinksForm socialLinks={profile.socialLinks} />
         <Button type="submit">Save</Button>
       </form>
     </FormProvider>

@@ -1,4 +1,5 @@
 import { useFieldArray, useFormContext } from 'react-hook-form';
+import type { SocialLink } from '../EditProfileForm';
 
 import {
   Button,
@@ -9,12 +10,7 @@ import {
   PopoverTrigger,
 } from '@/components/ui';
 
-// TODO: import this type from a common file
-type FormValues = {
-  socialLinks: Array<{ type: string; url: string }>;
-};
-
-export const SocialLinkForm = ({
+export const EditSocialIconLink = ({
   icon,
   label,
   type,
@@ -23,7 +19,9 @@ export const SocialLinkForm = ({
   label: string;
   type: string;
 }) => {
-  const { control, register, watch } = useFormContext<FormValues>();
+  const { control, register, watch } = useFormContext<{
+    socialLinks: SocialLink[];
+  }>();
   const { fields, update } = useFieldArray({ control, name: 'socialLinks' });
 
   const idx = fields.findIndex((f) => f.type === type);

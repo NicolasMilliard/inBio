@@ -3,19 +3,13 @@ import {
   type SocialType,
 } from '@/features/profile/model/social.config';
 import { useFormContext, useWatch } from 'react-hook-form';
+import type { SocialLink } from '../EditProfileForm';
 
-import { SocialLinkForm } from './SocialLinkForm';
+import { EditSocialIconLink } from './EditSocialIconLink';
 
-// TODO: import this type from a common file
-type FormValues = {
-  socialLinks: Array<{ type: string; url: string }>;
-};
-
-export const EditableSocialLinks = () => {
-  const { control } = useFormContext<FormValues>();
+export const EditableSocialIcons = () => {
+  const { control } = useFormContext<{ socialLinks: SocialLink[] }>();
   const socialLinks = useWatch({ control, name: 'socialLinks' });
-
-  // Show platforms that have a non-empty url OR have been toggled open (url can be empty but type is present)
   const activeLinks = socialLinks.filter((l) => l.url.trim() !== '');
 
   if (activeLinks.length === 0) return null;
@@ -28,7 +22,7 @@ export const EditableSocialLinks = () => {
         if (!config) return null;
 
         return (
-          <SocialLinkForm
+          <EditSocialIconLink
             key={link.type}
             icon={config.icon('size-6')}
             label={config.label}
