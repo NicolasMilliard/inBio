@@ -32,13 +32,12 @@ export const formatLensProfile = (account: Account): LensProfile => {
     address: account.address,
     website,
     attributes: attributes.filter(
-      (a) => a.key !== 'website' && !a.key.startsWith('links.'),
+      (a) => a.key !== 'website' && !a.key.startsWith('socialLinks.'),
     ),
     socialLinks: attributes
-      // replace links by socialLinks
-      .filter((a) => a.key.startsWith('links.'))
+      .filter((a) => a.key.startsWith('socialLinks'))
       .map((a) => ({
-        type: a.key.slice('links.'.length),
+        type: a.key.slice('socialLinks.'.length),
         key: a.key,
         value: a.value,
       })),

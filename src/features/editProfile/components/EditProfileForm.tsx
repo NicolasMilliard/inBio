@@ -1,5 +1,5 @@
 import { SOCIAL_CONFIG } from '@/features/profile/model/social.config';
-import { type LensProfile } from '@/helpers';
+import { type LensProfile, toMetadataAttribute } from '@/helpers';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { chains } from '@lens-chain/sdk/viem';
 import { lensAccountOnly, StorageClient } from '@lens-chain/storage-client';
@@ -57,7 +57,6 @@ export const EditProfileForm = ({ profile }: { profile: LensProfile }) => {
   const { reset } = methods;
 
   useEffect(() => {
-    // TODO: replace links with socialLinks
     reset((prev) => ({
       ...prev,
       socialLinks: Object.keys(SOCIAL_CONFIG).map((key) => {
@@ -79,17 +78,24 @@ export const EditProfileForm = ({ profile }: { profile: LensProfile }) => {
 
     // 2. Handle attributes
     const linkAttributes: Array<{
-      key: string;
       type: MetadataAttributeType.STRING;
+      key: string;
       value: string;
     }> = values.socialLinks
       .filter((l): l is { type: string; url: string } => !!l.url?.trim())
       .map((l) => ({
-        key: `links.${l.type}`,
         type: MetadataAttributeType.STRING,
+        key: `socialLinks.${l.type}`,
         value: l.url.trim(),
       }));
-    const allAttributes = [...(profile.attributes ?? []), ...linkAttributes];
+    const nonManagedAttributes = (profile.attributes ?? [])
+      .filter((a) => !a.key.startsWith('socialLinks.'))
+      .map(toMetadataAttribute); // ← re-narrow the GraphQL objects into the discriminated union
+    const allAttributes = [...nonManagedAttributes, ...linkAttributes];
+
+    console.log('values', values);
+    console.log('profile', profile);
+    console.log('allAttributes', allAttributes);
 
     // 3. Create metadata object
     const data = createMetadata({
