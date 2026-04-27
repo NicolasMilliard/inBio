@@ -37,42 +37,43 @@ export const MenuSocialIcon = ({
 
   return (
     <Command>
-      <CommandInput placeholder="Search platforms…" className="h-9" />
+      <CommandInput placeholder="Search platforms..." className="h-9" />
       <CommandEmpty>No platform found.</CommandEmpty>
-      {inactivePopular.length > 0 && (
-        <CommandGroup heading="Popular" className="max-h-64 overflow-y-auto">
-          {inactivePopular.map(({ value, label, Icon }) => (
-            <CommandItem
-              key={value}
-              value={label}
-              onSelect={() => handleSelect(value)}
-              className="cursor-pointer gap-2"
-            >
-              <Icon className="text-primary size-4 shrink-0" />
-              <span className="flex-1 text-sm">{label}</span>
-            </CommandItem>
-          ))}
-        </CommandGroup>
-      )}
-      <CommandSeparator />
-      {inactiveAll.length > 0 && (
-        <CommandGroup
-          heading="All Platforms"
-          className="max-h-64 overflow-y-auto"
-        >
-          {inactiveAll.map(({ value, label, Icon }) => (
-            <CommandItem
-              key={value}
-              value={label}
-              onSelect={() => handleSelect(value)}
-              className="cursor-pointer gap-2"
-            >
-              <Icon className="text-primary size-4 shrink-0" />
-              <span className="flex-1 text-sm">{label}</span>
-            </CommandItem>
-          ))}
-        </CommandGroup>
-      )}
+      <div className="max-h-[min(400px,40dvh)] overflow-y-auto">
+        {inactivePopular.length > 0 && (
+          <CommandGroup heading="Popular">
+            {inactivePopular.map(({ value, label, Icon }) => (
+              <CommandItem
+                key={value}
+                value={label}
+                onSelect={() => handleSelect(value)}
+                className="cursor-pointer gap-2"
+              >
+                <Icon className="text-primary size-4 shrink-0" />
+                <span className="flex-1 text-sm">{label}</span>
+              </CommandItem>
+            ))}
+          </CommandGroup>
+        )}
+        {inactiveAll.length > 0 && (
+          <>
+            <CommandSeparator />
+            <CommandGroup heading="All Platforms">
+              {inactiveAll.map(({ value, label, Icon }) => (
+                <CommandItem
+                  key={value}
+                  value={label}
+                  onSelect={() => handleSelect(value)}
+                  className="cursor-pointer gap-2"
+                >
+                  <Icon className="text-primary size-4 shrink-0" />
+                  <span className="flex-1 text-sm">{label}</span>
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          </>
+        )}
+      </div>
     </Command>
   );
 };

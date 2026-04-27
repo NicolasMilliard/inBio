@@ -7,9 +7,9 @@ import { AppHeader } from '@/components/layout';
 const RootLayout = () => (
   <>
     <TooltipProvider>
-      <div className="min-h-screen bg-white">
+      <div className="flex min-h-dvh flex-col bg-white">
         <AppHeader />
-        <main className="mx-auto w-full max-w-6xl">
+        <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col">
           <Outlet />
         </main>
         <Toaster />

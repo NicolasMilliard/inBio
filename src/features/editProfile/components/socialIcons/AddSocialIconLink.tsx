@@ -67,7 +67,13 @@ export const AddSocialIconLink = () => {
           <Plus size={16} />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-72 p-0" align="start" sideOffset={4}>
+      <PopoverContent
+        className="w-72 p-0"
+        align="center"
+        collisionPadding={8}
+        side="top"
+        sideOffset={4}
+      >
         {pendingType ? (
           (() => {
             const platform = ALL_SOCIAL_PLATFORMS.find(
