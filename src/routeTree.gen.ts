@@ -10,7 +10,6 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as AppRouteImport } from './routes/_app'
-import { Route as PageIdRouteRouteImport } from './routes/$pageId/route'
 import { Route as EditIndexRouteImport } from './routes/edit/index'
 import { Route as AppIndexRouteImport } from './routes/_app/index'
 import { Route as PageIdIndexRouteImport } from './routes/$pageId/index'
@@ -18,11 +17,6 @@ import { Route as AppDashboardRouteImport } from './routes/_app/dashboard'
 
 const AppRoute = AppRouteImport.update({
   id: '/_app',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PageIdRouteRoute = PageIdRouteRouteImport.update({
-  id: '/$pageId',
-  path: '/$pageId',
   getParentRoute: () => rootRouteImport,
 } as any)
 const EditIndexRoute = EditIndexRouteImport.update({
@@ -36,9 +30,9 @@ const AppIndexRoute = AppIndexRouteImport.update({
   getParentRoute: () => AppRoute,
 } as any)
 const PageIdIndexRoute = PageIdIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => PageIdRouteRoute,
+  id: '/$pageId/',
+  path: '/$pageId/',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AppDashboardRoute = AppDashboardRouteImport.update({
   id: '/dashboard',
@@ -47,7 +41,6 @@ const AppDashboardRoute = AppDashboardRouteImport.update({
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/$pageId': typeof PageIdRouteRouteWithChildren
   '/': typeof AppIndexRoute
   '/dashboard': typeof AppDashboardRoute
   '/$pageId/': typeof PageIdIndexRoute
@@ -61,7 +54,6 @@ export interface FileRoutesByTo {
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/$pageId': typeof PageIdRouteRouteWithChildren
   '/_app': typeof AppRouteWithChildren
   '/_app/dashboard': typeof AppDashboardRoute
   '/$pageId/': typeof PageIdIndexRoute
@@ -70,12 +62,11 @@ export interface FileRoutesById {
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/$pageId' | '/' | '/dashboard' | '/$pageId/' | '/edit/'
+  fullPaths: '/' | '/dashboard' | '/$pageId/' | '/edit/'
   fileRoutesByTo: FileRoutesByTo
   to: '/dashboard' | '/$pageId' | '/' | '/edit'
   id:
     | '__root__'
-    | '/$pageId'
     | '/_app'
     | '/_app/dashboard'
     | '/$pageId/'
@@ -84,8 +75,8 @@ export interface FileRouteTypes {
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  PageIdRouteRoute: typeof PageIdRouteRouteWithChildren
   AppRoute: typeof AppRouteWithChildren
+  PageIdIndexRoute: typeof PageIdIndexRoute
   EditIndexRoute: typeof EditIndexRoute
 }
 
@@ -96,13 +87,6 @@ declare module '@tanstack/react-router' {
       path: ''
       fullPath: '/'
       preLoaderRoute: typeof AppRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/$pageId': {
-      id: '/$pageId'
-      path: '/$pageId'
-      fullPath: '/$pageId'
-      preLoaderRoute: typeof PageIdRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/edit/': {
@@ -121,10 +105,10 @@ declare module '@tanstack/react-router' {
     }
     '/$pageId/': {
       id: '/$pageId/'
-      path: '/'
+      path: '/$pageId'
       fullPath: '/$pageId/'
       preLoaderRoute: typeof PageIdIndexRouteImport
-      parentRoute: typeof PageIdRouteRoute
+      parentRoute: typeof rootRouteImport
     }
     '/_app/dashboard': {
       id: '/_app/dashboard'
@@ -135,18 +119,6 @@ declare module '@tanstack/react-router' {
     }
   }
 }
-
-interface PageIdRouteRouteChildren {
-  PageIdIndexRoute: typeof PageIdIndexRoute
-}
-
-const PageIdRouteRouteChildren: PageIdRouteRouteChildren = {
-  PageIdIndexRoute: PageIdIndexRoute,
-}
-
-const PageIdRouteRouteWithChildren = PageIdRouteRoute._addFileChildren(
-  PageIdRouteRouteChildren,
-)
 
 interface AppRouteChildren {
   AppDashboardRoute: typeof AppDashboardRoute
@@ -161,8 +133,8 @@ const AppRouteChildren: AppRouteChildren = {
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
-  PageIdRouteRoute: PageIdRouteRouteWithChildren,
   AppRoute: AppRouteWithChildren,
+  PageIdIndexRoute: PageIdIndexRoute,
   EditIndexRoute: EditIndexRoute,
 }
 export const routeTree = rootRouteImport

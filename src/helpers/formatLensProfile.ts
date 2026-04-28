@@ -8,7 +8,7 @@ export type SocialLink = {
 };
 
 export type LensProfile = {
-  handle: string;
+  handle?: string;
   banner?: string | null;
   avatar?: string;
   name?: string | null;
@@ -17,6 +17,7 @@ export type LensProfile = {
   website?: string;
   attributes?: MetadataAttribute[];
   socialLinks?: SocialLink[];
+  links?: string[];
 };
 
 export const formatLensProfile = (account: Account): LensProfile => {
@@ -32,7 +33,10 @@ export const formatLensProfile = (account: Account): LensProfile => {
     address: account.address,
     website,
     attributes: attributes.filter(
-      (a) => a.key !== 'website' && !a.key.startsWith('socialLinks.'),
+      (a) =>
+        a.key !== 'website' &&
+        !a.key.startsWith('socialLinks') &&
+        !a.key.startsWith('links'),
     ),
     socialLinks: attributes
       .filter((a) => a.key.startsWith('socialLinks'))
@@ -41,5 +45,8 @@ export const formatLensProfile = (account: Account): LensProfile => {
         key: a.key,
         value: a.value,
       })),
+    links: attributes
+      .filter((a) => a.key.startsWith('links'))
+      .map((a) => a.value),
   };
 };

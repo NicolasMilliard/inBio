@@ -43,6 +43,7 @@ export const EditorForm = ({
         const existing = profile.socialLinks?.find((l) => l.type === key);
         return { type: key, url: existing?.value ?? '' };
       }),
+      links: profile.links,
     },
   });
 
@@ -68,12 +69,14 @@ export const EditorForm = ({
       toast.loading('Uploading metadata...', { id: toastId });
 
       // 2. Handle attributes
-      const linkAttributes: Array<{
-        type: MetadataAttributeType.STRING;
-        key: string;
-        value: string;
-      }> = values.socialLinks
-        .filter((l): l is { type: string; url: string } => !!l.url?.trim())
+      const linkAttributes:
+        | Array<{
+            type: MetadataAttributeType.STRING;
+            key: string;
+            value: string;
+          }>
+        | undefined = values.socialLinks
+        ?.filter((l): l is { type: string; url: string } => !!l.url?.trim())
         .map((l) => ({
           type: MetadataAttributeType.STRING,
           key: `socialLinks.${l.type}`,
@@ -82,7 +85,10 @@ export const EditorForm = ({
       const nonManagedAttributes = (profile.attributes ?? [])
         .filter((a) => !a.key.startsWith('socialLinks.'))
         .map(toMetadataAttribute);
-      const allAttributes = [...nonManagedAttributes, ...linkAttributes];
+      const allAttributes = [
+        ...nonManagedAttributes,
+        ...(linkAttributes ?? []),
+      ];
 
       // 3. Create and upload metadata
       const data = createMetadata({

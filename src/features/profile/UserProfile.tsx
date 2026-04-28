@@ -1,4 +1,4 @@
-import { formatLensProfile } from '@/helpers';
+import { formatLensProfile, formatUrlLabel } from '@/helpers';
 import { useAccount, useAccountStats } from '@lens-protocol/react';
 
 import { SpinnerScreen } from '@/components/ui';
@@ -7,6 +7,7 @@ import {
   Banner,
   Branding,
   Identity,
+  LinksSection,
   NotFoundScreen,
   SocialLinks,
   Statistics,
@@ -38,7 +39,7 @@ const UserProfile = ({ handleLens }: { handleLens: string }) => {
   const website = profile.website
     ? {
         href: profile.website,
-        label: profile.website.replace(/^https?:\/\//, '').replace(/\/$/, ''),
+        label: formatUrlLabel(profile.website),
       }
     : null;
 
@@ -49,6 +50,7 @@ const UserProfile = ({ handleLens }: { handleLens: string }) => {
         <Identity profile={profile} />
         <Statistics followers={followers} following={following} posts={posts} />
         <SocialLinks socialLinks={profile.socialLinks} />
+        <LinksSection links={profile.links} />
         {website && <WebsiteLink href={website.href} label={website.label} />}
         <Branding />
       </section>

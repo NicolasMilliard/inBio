@@ -11,7 +11,8 @@ export const profileFormSchema = z.object({
   avatar: z.union([z.instanceof(File), z.url(), z.literal('')]).optional(),
   name: z.string().min(1, 'Name is required'),
   bio: z.string().optional(),
-  socialLinks: z.array(socialLinkSchema),
+  socialLinks: z.array(socialLinkSchema).optional(),
+  links: z.array(z.url()).optional(),
 });
 
 export type ProfileFormValues = z.infer<typeof profileFormSchema>;
