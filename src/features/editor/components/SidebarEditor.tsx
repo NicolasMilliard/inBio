@@ -1,3 +1,4 @@
+import { Button } from '@/components/ui';
 import { AuthButton } from '@/features/auth/components';
 import { BarChart3, Image, Link2, Palette, Settings } from 'lucide-react';
 
@@ -20,7 +21,7 @@ const sections = [
   },
 ];
 
-export const ProfileEditorPanel = () => {
+export const SidebarEditor = () => {
   return (
     <aside className="sticky top-0 flex h-dvh w-72 flex-col border-l bg-white">
       <div className="border-b px-5 py-4">
@@ -46,6 +47,8 @@ export const ProfileEditorPanel = () => {
           </button>
         ))}
       </nav>
+
+      <Button type="submit">Save Changes</Button>
 
       <div className="border-t p-4">
         <AuthButton />

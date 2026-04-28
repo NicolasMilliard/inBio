@@ -16,7 +16,7 @@ type IdentityFormValues = {
   bio?: string;
 };
 
-export const EditableIdentity = ({ profile }: { profile: LensProfile }) => {
+export const IdentitySection = ({ profile }: { profile: LensProfile }) => {
   const { avatar, name, handle, bio } = profile;
 
   const {

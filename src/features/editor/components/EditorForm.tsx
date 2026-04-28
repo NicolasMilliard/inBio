@@ -1,6 +1,4 @@
-import { SOCIAL_CONFIG } from '@/features/profile/model/social.config';
 import { type LensProfile, toMetadataAttribute } from '@/helpers';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { chains } from '@lens-chain/sdk/viem';
 import { lensAccountOnly, StorageClient } from '@lens-chain/storage-client';
 import { uri } from '@lens-protocol/client';
@@ -11,42 +9,32 @@ import {
   MetadataAttributeType,
 } from '@lens-protocol/metadata';
 import { useSessionClient } from '@lens-protocol/react';
-import { useEffect } from 'react';
+import { useWalletClient } from 'wagmi';
+
+import { SOCIAL_CONFIG } from '@/features/profile/model/social.config';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { FormProvider, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
-import { useWalletClient } from 'wagmi';
-import { z } from 'zod';
-
-import { Button } from '@/components/ui';
-import { EditableIdentity } from './EditableIdentity';
-import { AddSocialIconLink, EditableSocialIcons } from './socialIcons';
+import {
+  profileFormSchema,
+  type ProfileFormValues,
+} from '../schemas/profile.schema';
 
 const storageClient = StorageClient.create();
 
-const socialLinkSchema = z.object({
-  type: z.string(),
-  url: z.url().or(z.literal('')),
-});
-
-export type SocialLink = z.infer<typeof socialLinkSchema>;
-
-const formSchema = z.object({
-  avatar: z.union([z.instanceof(File), z.url(), z.literal('')]).optional(),
-  name: z.string().min(1, 'Name is required'),
-  bio: z.string().optional(),
-  socialLinks: z.array(socialLinkSchema),
-});
-
-type FormValues = z.infer<typeof formSchema>;
-
-export const EditProfileForm = ({ profile }: { profile: LensProfile }) => {
+export const EditorForm = ({
+  profile,
+  children,
+}: {
+  profile: LensProfile;
+  children: React.ReactNode;
+}) => {
   const { data: sessionClient } = useSessionClient();
   const { data: walletClient } = useWalletClient();
-
   const acl = lensAccountOnly(profile.address, chains.mainnet.id);
 
-  const methods = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
+  const methods = useForm<ProfileFormValues>({
+    resolver: zodResolver(profileFormSchema),
     defaultValues: {
       avatar: profile.avatar ?? '',
       name: profile.name ?? '',
@@ -57,22 +45,8 @@ export const EditProfileForm = ({ profile }: { profile: LensProfile }) => {
       }),
     },
   });
-  const {
-    reset,
-    formState: { isSubmitting },
-  } = methods;
 
-  useEffect(() => {
-    reset((prev) => ({
-      ...prev,
-      socialLinks: Object.keys(SOCIAL_CONFIG).map((key) => {
-        const existing = profile.socialLinks?.find((l) => l.type === key);
-        return { type: key, url: existing?.value ?? '' };
-      }),
-    }));
-  }, [profile, reset]);
-
-  const onSubmit = async (values: FormValues) => {
+  const onSubmit = async (values: ProfileFormValues) => {
     if (!sessionClient || !walletClient) {
       toast.error('Not connected', {
         description: 'Please connect your wallet to update your profile.',
@@ -80,7 +54,9 @@ export const EditProfileForm = ({ profile }: { profile: LensProfile }) => {
       return;
     }
 
-    const toastId = toast.loading('Uploading avatar…');
+    console.log('Submit form', values);
+
+    const toastId = toast.loading('Uploading avatar...');
 
     try {
       // 1. Upload avatar if it's a new File
@@ -89,7 +65,7 @@ export const EditProfileForm = ({ profile }: { profile: LensProfile }) => {
           ? (await storageClient.uploadFile(values.avatar, { acl })).uri
           : values.avatar || profile.avatar;
 
-      toast.loading('Uploading metadata…', { id: toastId });
+      toast.loading('Uploading metadata...', { id: toastId });
 
       // 2. Handle attributes
       const linkAttributes: Array<{
@@ -120,7 +96,7 @@ export const EditProfileForm = ({ profile }: { profile: LensProfile }) => {
         acl,
       });
 
-      toast.loading('Waiting for transaction…', { id: toastId });
+      toast.loading('Waiting for transaction...', { id: toastId });
 
       // 4. Submit onchain
       const result = await setAccountMetadata(sessionClient, {
@@ -128,7 +104,11 @@ export const EditProfileForm = ({ profile }: { profile: LensProfile }) => {
       }).andThen(handleOperationWith(walletClient));
 
       if (result.isErr()) {
-        throw new Error(result.error.message ?? 'Transaction failed');
+        toast.error('Transaction failed', {
+          id: toastId,
+          description: result.error.message ?? 'An error occurred.',
+        });
+        return;
       }
 
       toast.success('Profile saved!', {
@@ -150,19 +130,7 @@ export const EditProfileForm = ({ profile }: { profile: LensProfile }) => {
 
   return (
     <FormProvider {...methods}>
-      <form
-        onSubmit={methods.handleSubmit(onSubmit)}
-        className="flex flex-col gap-4"
-      >
-        <EditableIdentity profile={profile} />
-        <div className="flex justify-center gap-2">
-          <EditableSocialIcons />
-          <AddSocialIconLink />
-        </div>
-        <Button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? 'Saving…' : 'Save'}
-        </Button>
-      </form>
+      <form onSubmit={methods.handleSubmit(onSubmit)}>{children}</form>
     </FormProvider>
   );
 };

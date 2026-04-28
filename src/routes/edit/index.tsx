@@ -8,21 +8,25 @@ import { createFileRoute } from '@tanstack/react-router';
 
 import { SpinnerScreen } from '@/components/ui';
 import { AuthGuard } from '@/features/auth/components';
-import { EditProfileForm } from '@/features/editProfile/components';
+import {
+  EditorForm,
+  IdentitySection,
+  SidebarEditor,
+  SocialIconsSection,
+} from '@/features/editor/components';
 import {
   Banner,
   Branding,
   NotFoundScreen,
-  ProfileEditorPanel,
   Statistics,
   WebsiteLink,
 } from '@/features/profile/components';
 
 export const Route = createFileRoute('/edit/')({
-  component: RouteComponent,
+  component: EditorPage,
 });
 
-function RouteComponent() {
+function EditorPage() {
   const { data: authenticatedUser } = useAuthenticatedUser();
   const {
     data: account,
@@ -55,25 +59,30 @@ function RouteComponent() {
 
   return (
     <AuthGuard>
-      <div className="flex">
-        <ProfileEditorPanel />
-        <div className="flex flex-1 items-center justify-center overflow-hidden">
-          <Banner banner={profile.banner} />
-          <section className="sm:bg-card/55 sm:border-secondary relative z-2 flex w-full animate-[riseIn_0.5s_cubic-bezier(0.22,1,0.36,1)_both] flex-col items-center gap-6 px-6 pt-12 pb-10 sm:my-8 sm:min-h-0 sm:w-105 sm:rounded-3xl sm:border sm:px-8 sm:pt-10 sm:pb-8 sm:shadow-[0_8px_48px_rgba(0,0,0,0.12),0_2px_8px_rgba(0,0,0,0.06)] sm:backdrop-blur-xl sm:backdrop-saturate-180">
-            <EditProfileForm profile={profile} />
-            <Statistics
-              followers={followers}
-              following={following}
-              posts={posts}
-            />
+      <EditorForm profile={profile}>
+        <div className="flex">
+          <SidebarEditor />
+          <main className="mx-auto flex w-full flex-1 flex-col">
+            <div className="flex flex-1 items-center justify-center overflow-hidden">
+              <Banner banner={profile.banner} />
+              <section className="sm:bg-card/55 sm:border-secondary relative z-2 flex w-full animate-[riseIn_0.5s_cubic-bezier(0.22,1,0.36,1)_both] flex-col items-center gap-6 px-6 pt-12 pb-10 sm:my-8 sm:min-h-0 sm:w-105 sm:rounded-3xl sm:border sm:px-8 sm:pt-10 sm:pb-8 sm:shadow-[0_8px_48px_rgba(0,0,0,0.12),0_2px_8px_rgba(0,0,0,0.06)] sm:backdrop-blur-xl sm:backdrop-saturate-180">
+                <IdentitySection profile={profile} />
+                <SocialIconsSection />
+                <Statistics
+                  followers={followers}
+                  following={following}
+                  posts={posts}
+                />
 
-            {website && (
-              <WebsiteLink href={website.href} label={website.label} />
-            )}
-            <Branding />
-          </section>
+                {website && (
+                  <WebsiteLink href={website.href} label={website.label} />
+                )}
+                <Branding />
+              </section>
+            </div>
+          </main>
         </div>
-      </div>
+      </EditorForm>
     </AuthGuard>
   );
 }

@@ -1,5 +1,5 @@
 import { useFieldArray, useFormContext } from 'react-hook-form';
-import type { SocialLink } from '../EditProfileForm';
+import type { SocialLink } from '../../schemas/profile.schema';
 
 import {
   Button,
