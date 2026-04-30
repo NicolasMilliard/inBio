@@ -6,5 +6,3 @@ export * from './formatUrlLabel';
 export * from './getHostname';
 export * from './isValidUrl';
 export * from './toMetadataAttribute';
-
-export * from './formatLensProfile'; // deprecated

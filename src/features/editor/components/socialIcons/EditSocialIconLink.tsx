@@ -24,11 +24,11 @@ export const EditSocialIconLink = ({
   }>();
   const { fields, update } = useFieldArray({ control, name: 'socialLinks' });
 
-  const idx = fields.findIndex((f) => f.type === type);
+  const idx = fields.findIndex((f) => f.platform === type);
   const url = watch(`socialLinks.${idx}.url`);
 
   const handleRemove = () => {
-    if (idx !== -1) update(idx, { type, url: '' });
+    if (idx !== -1) update(idx, { platform: type, url: '' });
   };
 
   if (idx === -1) return null;

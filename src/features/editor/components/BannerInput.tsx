@@ -21,7 +21,7 @@ export const BannerInput = () => {
     const previewURL = URL.createObjectURL(selectedFile);
 
     setValue(
-      'banner',
+      'coverPicture',
       {
         file: selectedFile,
         preview: previewURL,
