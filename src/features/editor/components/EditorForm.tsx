@@ -37,6 +37,9 @@ export const EditorForm = ({
     resolver: zodResolver(profileFormSchema),
     defaultValues: {
       avatar: profile.avatar ?? '',
+      banner: {
+        preview: profile.banner ?? '',
+      },
       name: profile.name ?? '',
       bio: profile.bio ?? '',
       socialLinks: Object.keys(SOCIAL_CONFIG).map((key) => {
@@ -65,6 +68,14 @@ export const EditorForm = ({
         values.avatar instanceof File
           ? (await storageClient.uploadFile(values.avatar, { acl })).uri
           : values.avatar || profile.avatar;
+
+      toast.loading('Uploading banner...', { id: toastId });
+
+      // 2. Upload banner if it's a new File
+      const bannerUri =
+        values.banner.file instanceof File
+          ? (await storageClient.uploadFile(values.banner.file, { acl })).uri
+          : values.banner.file || profile.banner;
 
       toast.loading('Uploading metadata...', { id: toastId });
 
@@ -114,6 +125,7 @@ export const EditorForm = ({
         name: values.name || profile.name || undefined,
         bio: values.bio || profile.bio || undefined,
         picture: avatarUri || undefined,
+        coverPicture: bannerUri || undefined,
         ...(allAttributes.length > 0 && { attributes: allAttributes }),
       });
 

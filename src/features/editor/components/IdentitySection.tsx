@@ -1,6 +1,7 @@
 import type { LensProfile } from '@/helpers';
 import { useRef, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
+import type { ProfileFormValues } from '../schemas/profile.schema';
 
 import {
   Avatar,
@@ -10,12 +11,6 @@ import {
   Textarea,
 } from '@/components/ui';
 
-type IdentityFormValues = {
-  avatar?: File;
-  name: string;
-  bio?: string;
-};
-
 export const IdentitySection = ({ profile }: { profile: LensProfile }) => {
   const { avatar, name, handle, bio } = profile;
 
@@ -23,7 +18,7 @@ export const IdentitySection = ({ profile }: { profile: LensProfile }) => {
     setValue,
     register,
     formState: { errors },
-  } = useFormContext<IdentityFormValues>();
+  } = useFormContext<ProfileFormValues>();
   const inputRef = useRef<HTMLInputElement>(null);
 
   const [preview, setPreview] = useState<string | null>(avatar ?? null);

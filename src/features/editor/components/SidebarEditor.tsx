@@ -1,12 +1,9 @@
 import { Button } from '@/components/ui';
 import { AuthButton } from '@/features/auth/components';
-import { BarChart3, Image, Link, Link2, Palette, Settings } from 'lucide-react';
+import { BarChart3, Link, Link2, Palette, Settings } from 'lucide-react';
+import { BannerInput } from './BannerInput';
 
 const sections = [
-  {
-    label: 'Banner',
-    icon: Image,
-  },
   {
     label: 'CTA Links',
     icon: Link2,
@@ -27,7 +24,7 @@ const sections = [
 
 export const SidebarEditor = () => {
   return (
-    <aside className="sticky top-0 flex h-dvh w-72 flex-col border-l bg-white">
+    <aside className="sticky top-0 z-10 flex h-dvh w-72 flex-col border-l bg-white">
       <div className="border-b px-5 py-4">
         <div className="mb-1 flex items-center gap-2">
           <Settings className="size-4 text-neutral-500" />
@@ -40,6 +37,8 @@ export const SidebarEditor = () => {
       </div>
 
       <nav className="flex-1 space-y-1 overflow-y-auto p-3">
+        <BannerInput />
+
         {sections.map(({ label, icon: Icon }) => (
           <button
             key={label}
