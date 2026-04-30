@@ -1,3 +1,5 @@
+// TODO: Remove this file (unused)
+
 import {
   MetadataAttributeType,
   type MetadataAttribute,

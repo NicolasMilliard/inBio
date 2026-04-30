@@ -1,11 +1,13 @@
+// This file is deprecated
+
 import { type MetadataAttribute } from '@lens-protocol/metadata';
 import { type Account } from '@lens-protocol/react';
 
-export type SocialLink = {
-  type: string;
-  key: string;
-  value: string;
-};
+// export type SocialLink = {
+//   type: string;
+//   key: string;
+//   value: string;
+// };
 
 export type LensProfile = {
   handle?: string;

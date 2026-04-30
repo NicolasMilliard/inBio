@@ -1,17 +1,21 @@
 import { z } from 'zod';
 
 export const socialLinkSchema = z.object({
-  type: z.string(),
-  url: z.url().or(z.literal('')),
+  platform: z.string(),
+  url: z.url(),
 });
 
 export type SocialLink = z.infer<typeof socialLinkSchema>;
 
 export const profileFormSchema = z.object({
-  avatar: z.union([z.instanceof(File), z.url(), z.literal('')]).optional(),
-  banner: z.object({
+  // avatar: z.union([z.instanceof(File), z.url(), z.literal('')]).optional(),
+  avatar: z.object({
     file: z.instanceof(File).optional(),
-    preview: z.string().optional(),
+    preview: z.url().optional(),
+  }),
+  coverPicture: z.object({
+    file: z.instanceof(File).optional(),
+    preview: z.url().optional(),
   }),
   name: z.string().min(1, 'Name is required'),
   bio: z.string().optional(),

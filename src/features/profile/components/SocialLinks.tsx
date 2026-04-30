@@ -1,38 +1,37 @@
-import type { LensProfile } from '@/helpers';
-import { SOCIAL_CONFIG, type SocialType } from '../model/social.config';
+import { type PlatformName, SOCIAL_MAP } from '@/constants';
+import { formatSocialLink } from '@/helpers';
+import type { LensLink } from '@/schemas/inBioMetadata.schema';
 
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui';
 
-export const SocialLinks = ({
-  socialLinks,
-}: {
-  socialLinks: LensProfile['socialLinks'];
-}) => {
+export const SocialLinks = ({ socialLinks }: { socialLinks?: LensLink[] }) => {
   if (!socialLinks || socialLinks.length === 0) return null;
 
   return (
     <div className="flex max-w-prose flex-wrap items-center justify-center gap-3">
-      {socialLinks.map((link) => {
-        const config = SOCIAL_CONFIG[link.type as SocialType];
+      {socialLinks.map((socialLink) => {
+        const formattedSocialLink = formatSocialLink(socialLink);
+        const platform =
+          SOCIAL_MAP[formattedSocialLink.platform as PlatformName];
 
-        if (!config) return null;
+        if (!platform) return null;
 
         return (
           <Tooltip>
             <TooltipTrigger>
               <a
-                key={link.key}
-                href={link.value}
+                key={socialLink.key}
+                href={socialLink.value}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-primary hover:text-chart-2 transition"
-                aria-label={config.label}
+                aria-label={platform.label}
               >
-                {config.icon('size-6')}
+                <platform.Icon className="size-6" />
               </a>
             </TooltipTrigger>
             <TooltipContent>
-              <p>{config.label}</p>
+              <p>{platform.label}</p>
             </TooltipContent>
           </Tooltip>
         );

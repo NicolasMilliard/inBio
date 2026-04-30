@@ -15,23 +15,37 @@ import {
   YouTubeIcon,
 } from '@/components/icons';
 
-export type SocialValue =
+export type PlatformName =
+  | 'bluesky'
   | 'discord'
+  | 'facebook'
   | 'farcaster'
   | 'instagram'
-  | 'twitter'
+  | 'github'
+  | 'mastodon'
+  | 'tiktok'
   | 'threads'
   | 'twitch'
-  | 'youtube'
-  | 'bluesky'
-  | 'github'
-  | 'facebook'
-  | 'mastodon'
-  | 'tiktok';
+  | 'twitter'
+  | 'youtube';
+
+type PlatformLabel =
+  | 'Bluesky'
+  | 'Discord'
+  | 'Facebook'
+  | 'Farcaster'
+  | 'Instagram'
+  | 'GitHub'
+  | 'Mastodon'
+  | 'TikTok'
+  | 'Threads'
+  | 'Twitch'
+  | 'Twitter / X'
+  | 'YouTube';
 
 export type SocialPlatform = {
-  value: SocialValue;
-  label: string;
+  value: PlatformName;
+  label: PlatformLabel;
   Icon: ComponentType<{ className?: string }>;
   placeholder: string;
   validateUrl: (url: string) => boolean;
@@ -138,7 +152,7 @@ export const ALL_SOCIAL_PLATFORMS = [
 
 export const SOCIAL_MAP = Object.fromEntries(
   ALL_SOCIAL_PLATFORMS.map((item) => [item.value, item]),
-) as Record<SocialValue, SocialPlatform>;
+) as Record<PlatformName, SocialPlatform>;
 
 // How many pill badges to show before collapsing into "+ N more"
 export const MAX_VISIBLE_BADGES = 2;

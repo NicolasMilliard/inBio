@@ -1,4 +1,4 @@
-import type { LensProfile } from '@/helpers';
+import type { InBioProfile } from '@/schemas/inBioMetadata.schema';
 import { useRef, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import type { ProfileFormValues } from '../schemas/profileForm.schema';
@@ -11,8 +11,14 @@ import {
   Textarea,
 } from '@/components/ui';
 
-export const IdentitySection = ({ profile }: { profile: LensProfile }) => {
-  const { avatar, name, handle, bio } = profile;
+export const IdentitySection = ({
+  lensHandle,
+  profile,
+}: {
+  lensHandle?: string;
+  profile: InBioProfile;
+}) => {
+  const { avatar, name, bio } = profile;
 
   const {
     setValue,
@@ -36,7 +42,7 @@ export const IdentitySection = ({ profile }: { profile: LensProfile }) => {
     const previewURL = URL.createObjectURL(selectedFile);
     setPreview(previewURL);
 
-    setValue('avatar', selectedFile, {
+    setValue('avatar.file', selectedFile, {
       shouldDirty: true,
       shouldValidate: true,
     });
@@ -50,12 +56,12 @@ export const IdentitySection = ({ profile }: { profile: LensProfile }) => {
         className="cursor-pointer rounded-full transition hover:opacity-60 focus:ring-2 focus:outline-none"
       >
         <Avatar size="xl">
-          <AvatarImage src={displayAvatar} alt={name ?? handle} />
+          <AvatarImage src={displayAvatar} alt={name ?? lensHandle} />
           <AvatarFallback>
             {name
               ? name[0].toUpperCase()
-              : handle
-                ? handle[0].toUpperCase()
+              : lensHandle
+                ? lensHandle[0].toUpperCase()
                 : 'U'}
           </AvatarFallback>
         </Avatar>

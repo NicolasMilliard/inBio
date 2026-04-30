@@ -1,17 +1,16 @@
-import { getHostname, type LensProfile, toMetadataAttribute } from '@/helpers';
+import { formatMetadataBeforeUpload, getHostname } from '@/helpers';
+import { type InBioMetadata } from '@/schemas/inBioMetadata.schema';
 import { chains } from '@lens-chain/sdk/viem';
 import { lensAccountOnly, StorageClient } from '@lens-chain/storage-client';
-import { uri } from '@lens-protocol/client';
+import { uri, type Account } from '@lens-protocol/client';
 import { setAccountMetadata } from '@lens-protocol/client/actions';
 import { handleOperationWith } from '@lens-protocol/client/viem';
-import {
-  account as createMetadata,
-  MetadataAttributeType,
-} from '@lens-protocol/metadata';
+import { MetadataAttributeType } from '@lens-protocol/metadata';
 import { useSessionClient } from '@lens-protocol/react';
 import { useWalletClient } from 'wagmi';
 
-import { SOCIAL_CONFIG } from '@/features/profile/model/social.config';
+import { SOCIAL_MAP } from '@/constants';
+import { formatSocialLink } from '@/helpers';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { FormProvider, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
@@ -23,30 +22,37 @@ import {
 const storageClient = StorageClient.create();
 
 export const EditorForm = ({
-  profile,
+  account,
+  inBioMetadata,
   children,
 }: {
-  profile: LensProfile;
+  account: Account;
+  inBioMetadata: InBioMetadata;
   children: React.ReactNode;
 }) => {
+  const inBioProfile = inBioMetadata.profile;
   const { data: sessionClient } = useSessionClient();
   const { data: walletClient } = useWalletClient();
-  const acl = lensAccountOnly(profile.address, chains.mainnet.id);
+  const acl = lensAccountOnly(account.address, chains.mainnet.id);
 
   const methods = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
     defaultValues: {
-      avatar: profile.avatar ?? '',
-      banner: {
-        preview: profile.banner ?? '',
+      avatar: {
+        preview: inBioProfile?.avatar ?? '',
       },
-      name: profile.name ?? '',
-      bio: profile.bio ?? '',
-      socialLinks: Object.keys(SOCIAL_CONFIG).map((key) => {
-        const existing = profile.socialLinks?.find((l) => l.type === key);
-        return { type: key, url: existing?.value ?? '' };
+      coverPicture: {
+        preview: inBioProfile?.coverPicture ?? '',
+      },
+      name: inBioProfile?.name ?? '',
+      bio: inBioProfile?.bio ?? '',
+      socialLinks: Object.keys(SOCIAL_MAP).map((key) => {
+        const existingSocialLink = inBioProfile?.socialLinks?.find(
+          (socialLink) => formatSocialLink(socialLink).platform === key,
+        );
+        return { platform: key, url: existingSocialLink?.value };
       }),
-      links: profile.links,
+      links: inBioProfile?.links?.map((link) => link.value),
     },
   });
 
@@ -64,70 +70,62 @@ export const EditorForm = ({
 
     try {
       // 1. Upload avatar if it's a new File
-      const avatarUri =
-        values.avatar instanceof File
-          ? (await storageClient.uploadFile(values.avatar, { acl })).uri
-          : values.avatar || profile.avatar;
+      const avatarUri = values.avatar.file
+        ? (await storageClient.uploadFile(values.avatar.file, { acl })).uri
+        : values.avatar.preview;
 
-      toast.loading('Uploading banner...', { id: toastId });
+      toast.loading('Uploading cover picture...', { id: toastId });
 
-      // 2. Upload banner if it's a new File
-      const bannerUri =
-        values.banner.file instanceof File
-          ? (await storageClient.uploadFile(values.banner.file, { acl })).uri
-          : values.banner.file || profile.banner;
+      // 2. Upload coverPicture if it's a new File
+      const coverPictureUri = values.coverPicture.file
+        ? (await storageClient.uploadFile(values.coverPicture.file, { acl }))
+            .uri
+        : values.coverPicture.preview;
 
       toast.loading('Uploading metadata...', { id: toastId });
 
       // 2. Handle attributes
 
       // Social links
-      const socialLinkAttributes:
-        | Array<{
-            type: MetadataAttributeType.STRING;
-            key: string;
-            value: string;
-          }>
-        | undefined = values.socialLinks
-        ?.filter((l): l is { type: string; url: string } => !!l.url?.trim())
+      const socialLinkAttributes = values.socialLinks
+        ?.filter((l): l is { platform: string; url: string } => !!l.url?.trim())
         .map((l) => ({
           type: MetadataAttributeType.STRING,
-          key: `socialLinks.${l.type}`,
+          key: `socialLinks.${l.platform}`,
           value: l.url.trim(),
         }));
 
       // Links
-      const linkAttributes:
-        | Array<{
-            type: MetadataAttributeType.STRING;
-            key: string;
-            value: string;
-          }>
-        | undefined = values.links?.map((l) => ({
+      const linkAttributes = values.links?.map((l) => ({
         type: MetadataAttributeType.STRING,
         key: `links.${getHostname(l)}`,
         value: l,
       }));
 
-      // Other attributes
-      const nonManagedAttributes = (profile.attributes ?? [])
-        .filter((a) => !a.key.startsWith('socialLinks.'))
-        .map(toMetadataAttribute);
+      const nextInBioProfile = {
+        coverPicture: coverPictureUri,
+        avatar: avatarUri,
+        name: values.name,
+        bio: values.bio,
+        socialLinks: socialLinkAttributes,
+        links: linkAttributes,
+      };
 
-      const allAttributes = [
-        ...nonManagedAttributes,
-        ...(socialLinkAttributes ?? []),
-        ...(linkAttributes ?? []),
-      ];
+      const nextInBioMetadata = {
+        ...inBioMetadata,
+        profile: nextInBioProfile,
+      };
 
       // 3. Create and upload metadata
-      const data = createMetadata({
-        name: values.name || profile.name || undefined,
-        bio: values.bio || profile.bio || undefined,
-        picture: avatarUri || undefined,
-        coverPicture: bannerUri || undefined,
-        ...(allAttributes.length > 0 && { attributes: allAttributes }),
-      });
+      // TODO: Test
+      const data = formatMetadataBeforeUpload(account, nextInBioMetadata);
+      // const data = createMetadata({
+      //   name: values.name || inBioProfile.name || undefined,
+      //   bio: values.bio || inBioProfile.bio || undefined,
+      //   picture: avatarUri || undefined,
+      //   coverPicture: coverPictureUri || undefined,
+      //   ...(allAttributes.length > 0 && { attributes: allAttributes }),
+      // });
 
       const { uri: metadataUri } = await storageClient.uploadAsJson(data, {
         acl,

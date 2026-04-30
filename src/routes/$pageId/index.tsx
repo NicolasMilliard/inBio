@@ -8,7 +8,7 @@ export const Route = createFileRoute('/$pageId/')({
 function PageContent() {
   const { pageId } = useParams({ from: '/$pageId/' });
 
-  const handleLens = pageId.toLowerCase();
+  const lensHandle = pageId.toLowerCase();
 
-  return <UserProfile handleLens={handleLens} />;
+  return <UserProfile lensHandle={lensHandle} />;
 }

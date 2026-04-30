@@ -58,7 +58,7 @@ export const LinksSection = () => {
 
   return (
     <>
-      {links.map((link, index) => (
+      {links?.map((link, index) => (
         <Popover
           key={link}
           open={editingIndex === index}

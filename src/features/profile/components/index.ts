@@ -1,5 +1,5 @@
-export * from './Banner';
 export * from './Branding';
+export * from './CoverPicture';
 export * from './Identity';
 export * from './LinksSection';
 export * from './NotFoundScreen';

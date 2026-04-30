@@ -1,6 +1,6 @@
+import { ALL_SOCIAL_PLATFORMS, type PlatformName } from '@/constants';
 import { useState } from 'react';
 import { useFieldArray, useFormContext, useWatch } from 'react-hook-form';
-import { ALL_SOCIAL_PLATFORMS, type SocialValue } from '../../constants';
 import type { SocialLink } from '../../schemas/profileForm.schema';
 
 import {
@@ -15,7 +15,8 @@ import { MenuSocialIcon } from './MenuSocialIcon';
 
 export const AddSocialIconLink = () => {
   const [open, setOpen] = useState(false);
-  const [pendingType, setPendingType] = useState<SocialValue | null>(null);
+  const [pendingPlatformName, setPendingPlatformName] =
+    useState<PlatformName | null>(null);
   const [pendingUrl, setPendingUrl] = useState('');
   const [urlError, setUrlError] = useState<string | null>(null);
 
@@ -24,13 +25,15 @@ export const AddSocialIconLink = () => {
   const socialLinks = useWatch({ control, name: 'socialLinks' });
 
   const activePlatformTypes = new Set(
-    socialLinks.filter((l) => l.url.trim() !== '').map((l) => l.type),
+    socialLinks.filter((l) => l.url !== '').map((l) => l.platform),
   );
 
   const handleConfirm = () => {
-    if (!pendingType || !pendingUrl.trim()) return;
+    if (!pendingPlatformName || !pendingUrl.trim()) return;
 
-    const platform = ALL_SOCIAL_PLATFORMS.find((p) => p.value === pendingType);
+    const platform = ALL_SOCIAL_PLATFORMS.find(
+      (p) => p.value === pendingPlatformName,
+    );
     const isValid = platform?.validateUrl(pendingUrl.trim()) ?? false;
 
     if (!isValid) {
@@ -41,15 +44,16 @@ export const AddSocialIconLink = () => {
     }
 
     setUrlError(null);
-    const idx = fields.findIndex((f) => f.type === pendingType);
-    if (idx !== -1) update(idx, { type: pendingType, url: pendingUrl.trim() });
-    setPendingType(null);
+    const idx = fields.findIndex((f) => f.platform === pendingPlatformName);
+    if (idx !== -1)
+      update(idx, { platform: pendingPlatformName, url: pendingUrl.trim() });
+    setPendingPlatformName(null);
     setPendingUrl('');
     setOpen(false);
   };
 
   const handleCancel = () => {
-    setPendingType(null);
+    setPendingPlatformName(null);
     setPendingUrl('');
     setUrlError(null);
   };
@@ -74,10 +78,10 @@ export const AddSocialIconLink = () => {
         side="top"
         sideOffset={4}
       >
-        {pendingType ? (
+        {pendingPlatformName ? (
           (() => {
             const platform = ALL_SOCIAL_PLATFORMS.find(
-              (p) => p.value === pendingType,
+              (p) => p.value === pendingPlatformName,
             );
             return (
               <div className="space-y-3 p-4">
@@ -116,7 +120,7 @@ export const AddSocialIconLink = () => {
         ) : (
           <MenuSocialIcon
             activePlatformTypes={activePlatformTypes}
-            setPendingType={setPendingType}
+            setPendingType={setPendingPlatformName}
             setPendingUrl={setPendingUrl}
           />
         )}

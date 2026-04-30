@@ -1,4 +1,4 @@
-export * from './BannerSection';
+export * from './CoverPictureSection';
 export * from './EditorForm';
 export * from './IdentitySection';
 export * from './LinksSection';

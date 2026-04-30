@@ -1,18 +1,17 @@
 import { useFormContext, useWatch } from 'react-hook-form';
 import { type ProfileFormValues } from '../schemas/profileForm.schema';
 
-export const BannerSection = () => {
+export const CoverPictureSection = () => {
   const { control } = useFormContext<ProfileFormValues>();
-  const banner = useWatch({ control, name: 'banner' });
-  const preview = banner?.preview;
+  const coverPicture = useWatch({ control, name: 'coverPicture.preview' });
 
   return (
     <>
-      {preview && (
+      {coverPicture && (
         <div className="fixed inset-0 z-0 overflow-hidden">
           <div
             className="absolute inset-0 scale-110 bg-cover bg-center blur brightness-85 saturate-130"
-            style={{ backgroundImage: `url(${preview})` }}
+            style={{ backgroundImage: `url(${coverPicture})` }}
           />
         </div>
       )}
