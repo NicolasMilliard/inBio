@@ -68,17 +68,23 @@ export const EditorForm = ({
 
     try {
       // 1. Upload avatar if it's a new File
-      const avatarUri = values.avatar.file
-        ? (await storageClient.uploadFile(values.avatar.file, { acl })).uri
-        : values.avatar.preview;
+      const avatarUpload = values.avatar.file
+        ? await storageClient.uploadFile(values.avatar.file, { acl })
+        : null;
+
+      const avatarUri = avatarUpload?.gatewayUrl ?? values.avatar.preview;
+
+      console.log('avatarUri', avatarUri);
 
       toast.loading('Uploading cover picture...', { id: toastId });
 
       // 2. Upload coverPicture if it's a new File
-      const coverPictureUri = values.coverPicture.file
-        ? (await storageClient.uploadFile(values.coverPicture.file, { acl }))
-            .uri
-        : values.coverPicture.preview;
+      const coverPictureUpload = values.coverPicture.file
+        ? await storageClient.uploadFile(values.coverPicture.file, { acl })
+        : null;
+
+      const coverPictureUri =
+        coverPictureUpload?.gatewayUrl ?? values.coverPicture.preview;
 
       toast.loading('Uploading metadata...', { id: toastId });
 

@@ -12,10 +12,12 @@ export const formatToInBioMetadata = (account: Account) => {
   const metadata = account.metadata;
   const attributes = metadata?.attributes;
 
-  const inBioMetadata = findAttribute<'inBio', InBioMetadata>(
-    attributes,
-    'inBio',
-  );
+  const rawInBioMetadata = findAttribute<'inBio', unknown>(attributes, 'inBio');
+  const inBioMetadata: InBioMetadata | undefined =
+    typeof rawInBioMetadata === 'string'
+      ? JSON.parse(rawInBioMetadata)
+      : rawInBioMetadata;
+
   const inBioProfile = inBioMetadata?.profile;
   const inBioTheme = inBioMetadata?.theme;
   const inBioSettings = inBioMetadata?.settings;

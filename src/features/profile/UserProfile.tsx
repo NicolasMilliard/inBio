@@ -34,8 +34,6 @@ const UserProfile = ({ lensHandle }: { lensHandle: string }) => {
   const following = stats?.graphFollowStats?.following;
   const posts = stats?.feedStats?.posts;
 
-  console.log('profile', profile);
-
   return (
     <main className="flex min-h-dvh flex-1 items-center justify-center">
       <CoverPicture coverPicture={profile.coverPicture} />
