@@ -15,4 +15,5 @@ export * from './sonner';
 export * from './spinner';
 export * from './SpinnerScreen';
 export * from './textarea';
+export * from './toggle';
 export * from './tooltip';

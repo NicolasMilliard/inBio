@@ -1,21 +1,9 @@
 import { Button } from '@/components/ui';
 import { AuthButton } from '@/features/auth/components';
-import { BarChart3, Link, Link2, Palette, Settings } from 'lucide-react';
-import { BannerInput } from './BannerInput';
+import { Palette, Settings } from 'lucide-react';
+import { BannerInput, StatisticsToggle } from './index';
 
 const sections = [
-  {
-    label: 'CTA Links',
-    icon: Link2,
-  },
-  {
-    label: 'Website Link',
-    icon: Link,
-  },
-  {
-    label: 'Statistics',
-    icon: BarChart3,
-  },
   {
     label: 'Theme',
     icon: Palette,
@@ -38,6 +26,7 @@ export const SidebarEditor = () => {
 
       <nav className="flex-1 space-y-1 overflow-y-auto p-3">
         <BannerInput />
+        <StatisticsToggle />
 
         {sections.map(({ label, icon: Icon }) => (
           <button

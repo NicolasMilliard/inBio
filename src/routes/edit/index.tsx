@@ -15,12 +15,9 @@ import {
   LinksSection,
   SidebarEditor,
   SocialIconsSection,
+  StatisticsSection,
 } from '@/features/editor/components';
-import {
-  Branding,
-  NotFoundScreen,
-  Statistics,
-} from '@/features/profile/components';
+import { Branding, NotFoundScreen } from '@/features/profile/components';
 
 export const Route = createFileRoute('/edit/')({
   component: EditorPage,
@@ -66,7 +63,7 @@ function EditorPage() {
                 />
                 <SocialIconsSection />
                 <LinksSection />
-                <Statistics
+                <StatisticsSection
                   followers={followers}
                   following={following}
                   posts={posts}

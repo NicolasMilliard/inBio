@@ -17,9 +17,9 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import {
-  profileFormSchema,
-  type ProfileFormValues,
-} from '../schemas/profileForm.schema';
+  metadataFormSchema,
+  type MetadataFormValues,
+} from '../schemas/metadataForm.schema';
 
 // Singleton: intentionally created once at module level to avoid
 // re-instantiating the storage client on every render.
@@ -28,8 +28,9 @@ const storageClient = StorageClient.create();
 // Stable ordered list of social platforms delivered from SOCIAL_MAP.
 const SOCIAL_PLATFORMS = Array.from(Object.keys(SOCIAL_MAP));
 
-function buildDefaultValues(inBioMetadata: InBioMetadata): ProfileFormValues {
+function buildDefaultValues(inBioMetadata: InBioMetadata): MetadataFormValues {
   const profile = inBioMetadata.profile;
+  const theme = inBioMetadata.theme;
 
   return {
     avatar: { preview: profile?.avatar ?? '' },
@@ -43,11 +44,12 @@ function buildDefaultValues(inBioMetadata: InBioMetadata): ProfileFormValues {
       return { platform: key, url: existing?.value };
     }),
     links: profile?.links?.map((link) => link.value) ?? [],
+    displayStatistics: theme?.displayStatistics ?? true,
   };
 }
 
 function buildSocialLinkAttributes(
-  socialLinks: ProfileFormValues['socialLinks'],
+  socialLinks: MetadataFormValues['socialLinks'],
 ) {
   return (socialLinks ?? [])
     .filter((l): l is { platform: string; url: string } => !!l.url?.trim())
@@ -58,7 +60,7 @@ function buildSocialLinkAttributes(
     }));
 }
 
-function buildLinkAttributes(links: ProfileFormValues['links']) {
+function buildLinkAttributes(links: MetadataFormValues['links']) {
   return (links ?? [])
     .filter(Boolean) // guard against empty strings
     .map((l) => {
@@ -74,12 +76,12 @@ export function useEditorForm(account: Account, inBioMetadata: InBioMetadata) {
   const { data: walletClient } = useWalletClient();
   const acl = lensAccountOnly(account.address, chains.mainnet.id);
 
-  const methods = useForm<ProfileFormValues>({
-    resolver: zodResolver(profileFormSchema),
+  const methods = useForm<MetadataFormValues>({
+    resolver: zodResolver(metadataFormSchema),
     defaultValues: buildDefaultValues(inBioMetadata),
   });
 
-  const onSubmit = async (values: ProfileFormValues) => {
+  const onSubmit = async (values: MetadataFormValues) => {
     if (!sessionClient || !walletClient) {
       toast.error('Not connected', {
         description: 'Please connect your wallet to update your profile.',
@@ -116,6 +118,11 @@ export function useEditorForm(account: Account, inBioMetadata: InBioMetadata) {
           bio: values.bio,
           socialLinks: buildSocialLinkAttributes(values.socialLinks),
           links: buildLinkAttributes(values.links),
+        },
+        theme: {
+          name: 'default',
+          displayStatistics: values.displayStatistics ?? true,
+          displayBranding: true,
         },
       };
 

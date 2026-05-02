@@ -27,7 +27,7 @@ export const profileSchema = z.object({
 export type InBioProfile = z.infer<typeof profileSchema>;
 
 const themeSchema = z.object({
-  name: z.enum(['default']).default('default'),
+  name: z.string(),
   displayStatistics: z.boolean().default(true),
   displayBranding: z.boolean().default(true),
 });

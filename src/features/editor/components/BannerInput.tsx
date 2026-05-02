@@ -1,12 +1,12 @@
 import { useRef } from 'react';
 import { useFormContext } from 'react-hook-form';
-import type { ProfileFormValues } from '../schemas/profileForm.schema';
+import type { MetadataFormValues } from '../schemas/metadataForm.schema';
 
 import { Button } from '@/components/ui';
 import { Image } from 'lucide-react';
 
 export const BannerInput = () => {
-  const { setValue } = useFormContext<ProfileFormValues>();
+  const { setValue } = useFormContext<MetadataFormValues>();
   const inputRef = useRef<HTMLInputElement>(null);
 
   const openFilePicker = () => {

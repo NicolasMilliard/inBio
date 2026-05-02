@@ -1,7 +1,7 @@
 import type { InBioProfile } from '@/schemas/inBioMetadata.schema';
 import { useRef, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
-import type { ProfileFormValues } from '../schemas/profileForm.schema';
+import type { MetadataFormValues } from '../schemas/metadataForm.schema';
 
 import {
   Avatar,
@@ -24,7 +24,7 @@ export const IdentitySection = ({
     setValue,
     register,
     formState: { errors },
-  } = useFormContext<ProfileFormValues>();
+  } = useFormContext<MetadataFormValues>();
   const inputRef = useRef<HTMLInputElement>(null);
 
   const [preview, setPreview] = useState<string | null>(avatar ?? null);

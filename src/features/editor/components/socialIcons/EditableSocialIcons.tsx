@@ -1,6 +1,6 @@
 import { type PlatformName, SOCIAL_MAP } from '@/constants';
 import { useFormContext, useWatch } from 'react-hook-form';
-import type { SocialLink } from '../../schemas/profileForm.schema';
+import type { SocialLink } from '../../schemas/metadataForm.schema';
 
 import { EditSocialIconLink } from './EditSocialIconLink';
 

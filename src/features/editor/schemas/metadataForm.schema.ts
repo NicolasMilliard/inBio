@@ -9,7 +9,7 @@ export const socialLinkSchema = z.object({
 
 export type SocialLink = z.infer<typeof socialLinkSchema>;
 
-export const profileFormSchema = z.object({
+export const metadataFormSchema = z.object({
   avatar: z.object({
     file: z.instanceof(File).optional(),
     preview: optionalUrl,
@@ -22,6 +22,7 @@ export const profileFormSchema = z.object({
   bio: z.string().optional(),
   socialLinks: z.array(socialLinkSchema).optional(),
   links: z.array(z.url()).optional(),
+  displayStatistics: z.boolean().optional(),
 });
 
-export type ProfileFormValues = z.infer<typeof profileFormSchema>;
+export type MetadataFormValues = z.infer<typeof metadataFormSchema>;
