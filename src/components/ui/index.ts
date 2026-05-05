@@ -18,6 +18,5 @@ export * from './textarea';
 export * from './toggle';
 export * from './tooltip';
 
-export * from './Mask';
 export * from './SpinnerScreen';
 export * from './Text';

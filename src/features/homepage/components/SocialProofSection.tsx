@@ -21,7 +21,7 @@ export const SocialProofSection = () => {
           className="social-proof-rotator inline-block h-14 overflow-visible"
           aria-hidden="true"
         >
-          <span className="social-proof-word-list inline-flex flex-col">
+          <span className="social-proof-word-list text-accent inline-flex flex-col">
             {[...WORDS, WORDS[0]].map((word, i) => (
               <span key={i} className="h-14 leading-[1.9]">
                 {word}
