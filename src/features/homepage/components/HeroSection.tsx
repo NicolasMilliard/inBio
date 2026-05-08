@@ -4,7 +4,7 @@ import { ProfileCheckingForm } from './ProfileCheckingForm';
 
 export const HeroSection = () => {
   return (
-    <section className="bg-secondary relative -top-20 min-h-dvh pt-28 pb-8">
+    <section className="bg-secondary min-h-dvh pt-28 pb-8">
       <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-16 px-4 md:flex-row">
         <div className="mx-auto flex flex-col gap-10 md:mx-0">
           <Text
@@ -29,6 +29,7 @@ export const HeroSection = () => {
           <ProfileCheckingForm />
         </div>
         {/* TODO: Add image instead of this placeholder */}
+        {/* <Image ... loading="eager" fetchPriority="high" aria-hidden="true" /> */}
         <div className="bg-accent mx-auto h-172.5 w-80 animate-[blurFadeIn_0.8s_ease-out_0.45s_forwards] opacity-0 md:mx-0"></div>
       </div>
     </section>

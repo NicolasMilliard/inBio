@@ -5,7 +5,7 @@ const AppLayout = () => (
   <div className="flex min-h-dvh flex-col">
     <AppHeader />
 
-    <main className="mx-auto flex w-full flex-1 flex-col">
+    <main className="-mt-20 flex flex-1 flex-col gap-30">
       <Outlet />
     </main>
   </div>
