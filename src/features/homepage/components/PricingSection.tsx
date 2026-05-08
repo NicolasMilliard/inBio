@@ -5,7 +5,7 @@ import { SubscriptionCard } from './SubscriptionCard';
 
 export const PricingSection = () => {
   return (
-    <section className="bg-secondary pt-30">
+    <section className="bg-secondary pt-30 pb-30">
       <div className="mx-auto flex max-w-6xl flex-col items-center px-4">
         <Text variant="h2" className="mb-6">
           Choose your right plan!
