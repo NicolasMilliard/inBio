@@ -64,7 +64,7 @@ export const AuthButton = () => {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button>
-          <div className="bg-muted text-muted-foreground flex h-6 w-6 items-center justify-center rounded-full text-xs font-medium">
+          <div className="bg-muted text-muted-foreground flex size-6 items-center justify-center rounded-full text-xs font-medium">
             {avatarLetter}
           </div>
           <span className="max-w-30 truncate">{displayName}</span>
@@ -95,7 +95,7 @@ export const AuthButton = () => {
                 onClick={() => !isActive && loginWithLens(item)}
                 className={`gap-2 ${isActive ? 'cursor-default' : 'cursor-pointer'}`}
               >
-                <div className="bg-background text-foreground flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-xs">
+                <div className="bg-background text-foreground flex size-5 shrink-0 items-center justify-center rounded-full text-xs">
                   {label[0]?.toUpperCase() ?? 'U'}
                 </div>
                 <span className="truncate">{label}</span>

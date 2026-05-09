@@ -18,10 +18,9 @@ export const SocialLinks = ({ socialLinks }: { socialLinks?: LensLink[] }) => {
         if (!platform) return null;
 
         return (
-          <Tooltip>
+          <Tooltip key={socialLink.key}>
             <TooltipTrigger>
               <a
-                key={socialLink.key}
                 href={socialLink.value}
                 target="_blank"
                 rel="noopener noreferrer"

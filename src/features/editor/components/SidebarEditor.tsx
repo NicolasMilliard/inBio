@@ -1,4 +1,4 @@
-import { Button } from '@/components/ui';
+import { Button } from '@/components/ui/button';
 import { AuthButton } from '@/features/auth/components';
 import { Palette, Settings } from 'lucide-react';
 import { BannerInput, BrandingToggle, StatisticsToggle } from './index';

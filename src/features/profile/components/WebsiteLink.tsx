@@ -30,7 +30,7 @@ export const WebsiteLink = ({ href, label, onClick }: WebsiteLinkProps) => {
           src={imgSrc}
           alt={label}
           referrerPolicy="no-referrer"
-          className="h-5 w-5 shrink-0 rounded-sm object-cover"
+          className="size-5 shrink-0 rounded-sm object-cover"
           onError={() => {
             if (imgSrc !== googleFallback) {
               setImgSrc(googleFallback);
@@ -47,7 +47,7 @@ export const WebsiteLink = ({ href, label, onClick }: WebsiteLinkProps) => {
         {label}
       </span>
 
-      <ExternalLink className="h-4 w-4 shrink-0 transition-transform duration-150 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+      <ExternalLink className="size-4 shrink-0 transition-transform duration-150 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
     </>
   );
 
