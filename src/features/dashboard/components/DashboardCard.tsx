@@ -6,14 +6,15 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
+  Text,
 } from '@/components/ui';
 import { cn } from '@/lib/utils';
 
 type DashboardCardProps = {
   title: string;
   description?: string;
-  footer?: ReactNode;
   children?: ReactNode;
+  footer?: ReactNode;
   className?: string;
 };
 
@@ -25,28 +26,15 @@ export function DashboardCard({
   className,
 }: DashboardCardProps) {
   return (
-    <Card
-      className={cn(
-        'border-border bg-background border shadow-none backdrop-blur-md',
-
-        'relative overflow-hidden',
-        'before:absolute before:inset-0 before:rounded-lg',
-        'before:from-primary/5 before:bg-linear-to-br before:via-transparent before:to-transparent',
-        'before:opacity-60',
-
-        // animation
-        'transition-all duration-300',
-        'hover:border-primary/30 hover:shadow-primary/5 hover:-translate-y-1 hover:shadow-md',
-
-        className,
-      )}
-    >
+    <Card className={cn('bg-muted/40 ring-0', className)}>
       <CardHeader>
-        <CardTitle className="text-base font-medium tracking-tight">
-          {title}
+        <CardTitle>
+          <Text variant="h3" className="text-foreground">
+            {title}
+          </Text>
         </CardTitle>
         {description && (
-          <CardDescription className="text-muted-foreground text-sm">
+          <CardDescription className="text-foreground">
             {description}
           </CardDescription>
         )}
