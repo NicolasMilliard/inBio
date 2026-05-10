@@ -4,15 +4,21 @@ import {
   type EvmAddress,
 } from '@lens-protocol/react';
 import { signMessageWith } from '@lens-protocol/react/viem';
-import { useConnection, useWalletClient } from 'wagmi';
+import { getWalletClient } from '@wagmi/core';
+import { useConfig, useConnection } from 'wagmi';
 
 export const useLensLogin = () => {
-  const { address } = useConnection();
-  const { data: signer } = useWalletClient();
+  const config = useConfig();
+  const { address, connector } = useConnection();
   const { execute: login } = useLogin();
 
   return async (item: AccountAvailable) => {
-    if (!signer) return;
+    if (!address || !connector) return;
+
+    const signer = await getWalletClient(config, {
+      account: address,
+      connector,
+    });
 
     const ownerOrManager = signer?.account?.address ?? (address as EvmAddress);
     if (!ownerOrManager) return;
@@ -32,11 +38,9 @@ export const useLensLogin = () => {
             },
           };
 
-    const result = await login({
+    return login({
       ...payload,
       signMessage: signMessageWith(signer),
     });
-
-    return result;
   };
 };
