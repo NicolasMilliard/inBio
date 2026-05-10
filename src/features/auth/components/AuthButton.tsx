@@ -35,10 +35,13 @@ export const AuthButton = () => {
 
   const handleDisconnect = async () => {
     try {
-      await lensLogout();
-      await disconnect.mutateAsync();
+      if (authenticatedUser) {
+        await lensLogout();
+      }
     } catch (error) {
-      console.error('[AuthButton] disconnect error:', error);
+      console.warn('[AuthButton] Lens logout skipped:', error);
+    } finally {
+      await disconnect.mutateAsync();
     }
   };
 
