@@ -1,7 +1,7 @@
 import { useEditorAccount } from '@/features/editor/hooks';
 import { createFileRoute } from '@tanstack/react-router';
 
-import { SpinnerScreen } from '@/components/ui';
+import { SidebarProvider, SpinnerScreen } from '@/components/ui';
 import { AuthGuard } from '@/features/auth/components';
 import { EditorScreen } from '@/features/editor/components/EditorScreen';
 import { NotFoundScreen } from '@/features/profile/components';
@@ -21,7 +21,9 @@ function EditorPage() {
 
   return (
     <AuthGuard>
-      <EditorScreen account={account} stats={stats} />
+      <SidebarProvider>
+        <EditorScreen account={account} stats={stats} />
+      </SidebarProvider>
     </AuthGuard>
   );
 }
