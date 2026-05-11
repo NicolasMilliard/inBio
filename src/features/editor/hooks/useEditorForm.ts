@@ -33,8 +33,8 @@ function buildDefaultValues(inBioMetadata: InBioMetadata): MetadataFormValues {
   const theme = inBioMetadata.theme;
 
   return {
-    avatar: { preview: profile?.avatar ?? '' },
-    coverPicture: { preview: profile?.coverPicture ?? '' },
+    avatar: { preview: profile?.avatar ?? null },
+    coverPicture: { preview: profile?.coverPicture ?? null },
     name: profile?.name ?? '',
     bio: profile?.bio ?? '',
     socialLinks: SOCIAL_PLATFORMS.map((key) => {
@@ -113,8 +113,8 @@ export function useEditorForm(account: Account, inBioMetadata: InBioMetadata) {
       const nextInBioMetadata = {
         ...inBioMetadata,
         profile: {
-          avatar: avatarUri,
-          coverPicture: coverPictureUri,
+          avatar: avatarUri ?? undefined,
+          coverPicture: coverPictureUri ?? undefined,
           name: values.name,
           bio: values.bio,
           socialLinks: buildSocialLinkAttributes(values.socialLinks),

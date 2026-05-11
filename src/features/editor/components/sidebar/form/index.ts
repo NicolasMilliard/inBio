@@ -1,2 +1,2 @@
 export * from './BrandingSwitch';
-export * from './CoverPictureControl';
+export * from './PictureController';

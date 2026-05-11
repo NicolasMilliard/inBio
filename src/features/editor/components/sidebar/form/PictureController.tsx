@@ -1,28 +1,35 @@
-import { useEditorContext } from '@/features/editor/context/editor.context';
 import type { MetadataFormValues } from '@/features/editor/schemas/metadataForm.schema';
+import { cn } from '@/lib/utils';
 import { useRef } from 'react';
 import { useFormContext } from 'react-hook-form';
 
 import {
-  Button,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
   Image,
+  Text,
 } from '@/components/ui';
 import { ImageIcon } from 'lucide-react';
 
-export const CoverPictureControl = () => {
-  const { inBioMetadata } = useEditorContext();
-  const coverPicturePath = inBioMetadata.profile?.coverPicture;
+type PictureControllerProps = {
+  picturePath?: string;
+  formValue: 'coverPicture' | 'avatar';
+};
 
+export const PictureController = ({
+  picturePath,
+  formValue,
+}: PictureControllerProps) => {
   const { setValue, watch } = useFormContext<MetadataFormValues>();
   const inputRef = useRef<HTMLInputElement>(null);
-  const watchedPreview = watch('coverPicture.preview');
+  const watchedPreview = watch(`${formValue}.preview`);
 
-  const currentCoverPicture =
-    watchedPreview === undefined ? coverPicturePath : watchedPreview;
+  const currentPicture =
+    watchedPreview === undefined ? picturePath : watchedPreview;
+
+  const label = formValue === 'coverPicture' ? 'background' : 'avatar';
 
   const openFilePicker = () => {
     inputRef.current?.click();
@@ -36,7 +43,7 @@ export const CoverPictureControl = () => {
     const previewURL = URL.createObjectURL(selectedFile);
 
     setValue(
-      'coverPicture',
+      formValue,
       { file: selectedFile, preview: previewURL },
       {
         shouldDirty: true,
@@ -49,7 +56,7 @@ export const CoverPictureControl = () => {
 
   const removeCoverPicture = () => {
     setValue(
-      'coverPicture',
+      formValue,
       { file: undefined, preview: null },
       {
         shouldDirty: true,
@@ -62,26 +69,30 @@ export const CoverPictureControl = () => {
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="w-fit gap-4">
-            {currentCoverPicture ? (
+          <div className="bg-input/50 flex items-center gap-4 rounded-3xl px-3 py-1">
+            {currentPicture ? (
               <Image
-                src={currentCoverPicture}
-                className="h-6 w-auto rounded-md"
+                src={currentPicture}
+                className={cn(
+                  label === 'avatar'
+                    ? 'size-6 rounded-full'
+                    : 'h-6 w-auto rounded-md',
+                )}
               />
             ) : (
               <div className="bg-muted flex size-8 items-center justify-center rounded-full">
                 <ImageIcon />
               </div>
             )}
-            Background image
-          </Button>
+            <Text className="text-sm first-letter:uppercase">{label}</Text>
+          </div>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
           <DropdownMenuItem onSelect={openFilePicker}>
-            Change background image
+            Change {label}
           </DropdownMenuItem>
           <DropdownMenuItem variant="destructive" onSelect={removeCoverPicture}>
-            Remove background image
+            Remove {label}
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
