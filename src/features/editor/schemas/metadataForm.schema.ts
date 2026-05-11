@@ -1,6 +1,9 @@
 import { z } from 'zod';
 
-const optionalUrl = z.union([z.url(), z.literal('')]).optional();
+const optionalUrl = z
+  .union([z.url(), z.literal('')])
+  .nullable()
+  .optional();
 
 export const socialLinkSchema = z.object({
   platform: z.string(),

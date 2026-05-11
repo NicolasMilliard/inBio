@@ -1,4 +1,3 @@
-export * from './BannerInput';
 export * from './BrandingSection';
 export * from './CoverPictureSection';
 export * from './EditorForm';
