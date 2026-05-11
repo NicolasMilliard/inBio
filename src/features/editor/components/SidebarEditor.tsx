@@ -9,7 +9,7 @@ import {
   Text,
 } from '@/components/ui';
 import { Link } from '@tanstack/react-router';
-import { ArrowLeft } from 'lucide-react';
+import { ChevronLeft } from 'lucide-react';
 import { BannerInput } from './BannerInput';
 import { StatisticsToggle } from './StatisticsToggle';
 import { BrandingSwitch } from './sidebar/BrandingSwitch';
@@ -20,8 +20,8 @@ export const SidebarEditor = () => {
       <SidebarHeader className="text-foreground/70 border-foreground/40 items-start border-b">
         <Button asChild type="button" variant="ghost" className="text-sm">
           <Link to="/dashboard">
-            <ArrowLeft size={16} />
-            Return to dashboard
+            <ChevronLeft size={16} />
+            Back to dashboard
           </Link>
         </Button>
       </SidebarHeader>
