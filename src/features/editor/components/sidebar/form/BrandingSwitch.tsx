@@ -1,5 +1,5 @@
+import type { MetadataFormValues } from '@/features/editor/schemas/metadataForm.schema';
 import { useFormContext, useWatch } from 'react-hook-form';
-import type { MetadataFormValues } from '../../../schemas/metadataForm.schema';
 
 import { Field, Label, Switch } from '@/components/ui';
 
@@ -12,16 +12,13 @@ export const BrandingSwitch = () => {
     <Field orientation="horizontal">
       <Switch
         id="display-branding"
-        className="cursor-pointer"
         checked={isChecked}
         onCheckedChange={(pressed) =>
           setValue('displayBranding', pressed, { shouldDirty: true })
         }
         size="sm"
       />
-      <Label htmlFor="display-branding" className="cursor-pointer">
-        Branding
-      </Label>
+      <Label htmlFor="display-branding">Branding</Label>
     </Field>
   );
 };
