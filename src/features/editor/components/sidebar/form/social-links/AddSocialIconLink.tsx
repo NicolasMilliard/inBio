@@ -1,122 +1,151 @@
 import { ALL_SOCIAL_PLATFORMS, type PlatformName } from '@/constants';
-import type { SocialLink } from '@/features/editor/schemas/metadataForm.schema';
+import type { MetadataFormValues } from '@/features/editor/schemas/metadataForm.schema';
 import { useState } from 'react';
-import { useFieldArray, useFormContext, useWatch } from 'react-hook-form';
+import { useFormContext, useWatch } from 'react-hook-form';
 
 import {
   Button,
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
   Input,
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
+  Text,
 } from '@/components/ui';
 import { Plus } from 'lucide-react';
-import { MenuSocialIcon } from '../../../socialIcons/MenuSocialIcon';
+import { MenuSocialIcon } from './MenuSocialIcon';
 
 export const AddSocialIconLink = () => {
   const [open, setOpen] = useState(false);
   const [pendingPlatformName, setPendingPlatformName] =
     useState<PlatformName | null>(null);
+
   const [pendingUrl, setPendingUrl] = useState('');
   const [urlError, setUrlError] = useState<string | null>(null);
 
-  const { control } = useFormContext<{ socialLinks: SocialLink[] }>();
-  const { fields, update } = useFieldArray({ control, name: 'socialLinks' });
+  const { control, setValue } = useFormContext<MetadataFormValues>();
+
   const socialLinks = useWatch({ control, name: 'socialLinks' });
 
   const activePlatformTypes = new Set(
-    socialLinks.filter((l) => l.url !== undefined).map((l) => l.platform),
+    socialLinks?.filter((link) => !!link.url).map((link) => link.platform),
   );
 
-  const handleConfirm = () => {
-    if (!pendingPlatformName || !pendingUrl.trim()) return;
+  const selectedPlatform = ALL_SOCIAL_PLATFORMS.find(
+    (platform) => platform.value === pendingPlatformName,
+  );
 
-    const platform = ALL_SOCIAL_PLATFORMS.find(
-      (p) => p.value === pendingPlatformName,
-    );
-    const isValid = platform?.validateUrl(pendingUrl.trim()) ?? false;
-
-    if (!isValid) {
-      setUrlError(
-        `Please enter a valid ${platform?.label} URL (e.g. ${platform?.placeholder})`,
-      );
-      return;
-    }
-
-    setUrlError(null);
-    const idx = fields.findIndex((f) => f.platform === pendingPlatformName);
-    if (idx !== -1)
-      update(idx, { platform: pendingPlatformName, url: pendingUrl.trim() });
+  const handleClose = () => {
     setPendingPlatformName(null);
     setPendingUrl('');
+    setUrlError(null);
     setOpen(false);
   };
 
-  const handleCancel = () => {
-    setPendingPlatformName(null);
-    setPendingUrl('');
-    setUrlError(null);
+  const handleConfirm = () => {
+    if (!socialLinks || !pendingPlatformName || !pendingUrl.trim()) return;
+
+    const normalizedUrl = pendingUrl.trim();
+    const isValid = selectedPlatform?.validateUrl(normalizedUrl) ?? false;
+
+    if (!isValid) {
+      setUrlError(`Please enter a valid ${selectedPlatform?.label} URL.`);
+      return;
+    }
+
+    const index = socialLinks.findIndex(
+      (link) => link.platform === pendingPlatformName,
+    );
+
+    if (index === -1) return;
+
+    setValue(`socialLinks.${index}.url`, normalizedUrl, {
+      shouldDirty: true,
+      shouldTouch: true,
+    });
+
+    handleClose();
   };
 
   return (
-    <Popover
+    <Dialog
       open={open}
-      onOpenChange={(o) => {
-        setOpen(o);
-        if (!o) handleCancel();
+      onOpenChange={(nextOpen) => {
+        setOpen(nextOpen);
+        if (!nextOpen) handleClose();
       }}
     >
-      <PopoverTrigger asChild>
-        <Button type="button" variant="outline">
+      <DialogTrigger asChild>
+        <Button type="button" variant="outline" size="icon">
           <Plus size={16} />
         </Button>
-      </PopoverTrigger>
-      <PopoverContent
-        className="w-72 p-0"
-        align="center"
-        collisionPadding={8}
-        side="top"
-        sideOffset={4}
-      >
+      </DialogTrigger>
+
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>
+            {pendingPlatformName
+              ? `Add your ${selectedPlatform?.label}`
+              : 'Add a social link'}
+          </DialogTitle>
+
+          <DialogDescription>
+            Changes are saved locally. Submit the profile form to publish them.
+          </DialogDescription>
+        </DialogHeader>
+
         {pendingPlatformName ? (
-          (() => {
-            const platform = ALL_SOCIAL_PLATFORMS.find(
-              (p) => p.value === pendingPlatformName,
-            );
-            return (
-              <div className="space-y-3 p-4">
-                <p className="text-sm font-medium">{platform?.label} link</p>
-                <Input
-                  type="url"
-                  placeholder={platform?.placeholder}
-                  value={pendingUrl}
-                  onChange={(e) => setPendingUrl(e.target.value)}
-                  autoFocus
-                  onKeyDown={(e) => e.key === 'Enter' && handleConfirm()}
-                />
-                {urlError && (
-                  <p className="text-destructive text-xs">{urlError}</p>
-                )}
-                <div className="flex gap-2">
-                  <Button
-                    type="button"
-                    className="flex-1"
-                    onClick={handleConfirm}
-                    disabled={!pendingUrl.trim()}
-                  >
-                    Add
-                  </Button>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={handleCancel}
-                  >
-                    Back
-                  </Button>
-                </div>
-              </div>
-            );
-          })()
+          <div className="space-y-4">
+            <Input
+              type="url"
+              placeholder={selectedPlatform?.placeholder}
+              value={pendingUrl}
+              onChange={(e) => {
+                setPendingUrl(e.target.value);
+
+                if (urlError) {
+                  setUrlError(null);
+                }
+              }}
+              autoFocus
+              //TODO: Check if it is working without
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  handleConfirm();
+                }
+              }}
+            />
+
+            {urlError && (
+              <Text className="text-destructive text-sm">{urlError}</Text>
+            )}
+
+            <DialogFooter>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => {
+                  setPendingPlatformName(null);
+                  setPendingUrl('');
+                  setUrlError(null);
+                }}
+              >
+                Back
+              </Button>
+
+              <Button
+                type="button"
+                onClick={handleConfirm}
+                disabled={!pendingUrl.trim()}
+              >
+                Add
+              </Button>
+            </DialogFooter>
+          </div>
         ) : (
           <MenuSocialIcon
             activePlatformTypes={activePlatformTypes}
@@ -124,7 +153,9 @@ export const AddSocialIconLink = () => {
             setPendingUrl={setPendingUrl}
           />
         )}
-      </PopoverContent>
-    </Popover>
+
+        <DialogClose />
+      </DialogContent>
+    </Dialog>
   );
 };

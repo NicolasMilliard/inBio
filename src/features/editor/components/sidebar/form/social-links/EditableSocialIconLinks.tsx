@@ -61,9 +61,13 @@ const EditableSocialLink = ({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <button className="text-primary hover:text-chart-2 cursor-pointer transition">
+        <Button
+          variant="ghost"
+          size="icon"
+          className="text-foreground hover:text-primary cursor-pointer transition"
+        >
           {icon}
-        </button>
+        </Button>
       </DialogTrigger>
 
       <DialogContent>

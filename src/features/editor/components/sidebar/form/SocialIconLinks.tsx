@@ -1,7 +1,5 @@
 import { Text } from '@/components/ui';
-import { EditableSocialLinks } from './social-links';
-
-import { AddSocialIconLink } from './social-links/AddSocialIconLink';
+import { AddSocialIconLink, EditableSocialLinks } from './social-links';
 
 export const SocialLinks = () => {
   return (
