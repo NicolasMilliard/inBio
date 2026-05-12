@@ -1,5 +1,5 @@
-import { SidebarGroup, SidebarGroupLabel, Text } from '@/components/ui';
-import { SocialLinks } from './form';
+import { SidebarGroup, SidebarGroupLabel } from '@/components/ui';
+import { ButtonLinks, SocialLinks } from './form';
 
 export const LinksGroup = () => {
   return (
@@ -7,8 +7,10 @@ export const LinksGroup = () => {
       <SidebarGroupLabel className="pl-0 tracking-widest uppercase">
         Links
       </SidebarGroupLabel>
-      <SocialLinks />
-      <Text>Buttons</Text>
+      <div className="flex flex-col gap-4">
+        <SocialLinks />
+        <ButtonLinks />
+      </div>
     </SidebarGroup>
   );
 };
