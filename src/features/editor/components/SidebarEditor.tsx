@@ -18,12 +18,13 @@ export const SidebarEditor = () => {
   return (
     <Sidebar variant="floating">
       <SidebarHeader className="text-foreground/70 border-foreground/40 items-start border-b">
-        <Button asChild type="button" variant="ghost" className="text-sm">
-          <Link to="/dashboard">
-            <ChevronLeft size={16} />
-            Back to dashboard
-          </Link>
-        </Button>
+        <Link
+          to="/dashboard"
+          className="hover:text-muted-foreground flex items-center gap-2 text-sm hover:underline"
+        >
+          <ChevronLeft size={16} />
+          Back to dashboard
+        </Link>
       </SidebarHeader>
       <SidebarContent>
         <IdentityGroup />
