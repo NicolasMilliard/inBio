@@ -8,7 +8,7 @@ export const DashboardScreen = () => {
       <Text variant="h1" className="text-foreground">
         Dashboard
       </Text>
-      <section className="grid gap-4 md:grid-cols-2">
+      <section className="mb-30 grid gap-4 md:grid-cols-2">
         <DashboardCard
           title="Edit your Profile"
           description="Update your identity, links and public data."

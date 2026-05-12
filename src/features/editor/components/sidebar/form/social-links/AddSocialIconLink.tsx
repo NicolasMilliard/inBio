@@ -112,7 +112,6 @@ export const AddSocialIconLink = () => {
                 }
               }}
               autoFocus
-              //TODO: Check if it is working without
               onKeyDown={(e) => {
                 if (e.key === 'Enter') {
                   handleConfirm();
