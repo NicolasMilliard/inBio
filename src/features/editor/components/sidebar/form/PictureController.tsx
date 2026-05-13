@@ -8,7 +8,9 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  FieldSet,
   Image,
+  Label,
   Text,
 } from '@/components/ui';
 import { ImageIcon } from 'lucide-react';
@@ -69,23 +71,28 @@ export const PictureController = ({
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <div className="bg-input/50 flex items-center gap-4 rounded-3xl px-3 py-1">
-            {currentPicture ? (
-              <Image
-                src={currentPicture}
-                className={cn(
-                  label === 'avatar'
-                    ? 'size-6 rounded-full'
-                    : 'h-6 w-auto rounded-md',
-                )}
-              />
-            ) : (
-              <div className="bg-muted flex size-8 items-center justify-center rounded-full">
-                <ImageIcon />
-              </div>
-            )}
-            <Text className="text-sm first-letter:uppercase">{label}</Text>
-          </div>
+          <FieldSet className="gap-2">
+            <Label htmlFor="avatar">
+              <span className="first-letter:uppercase">{label}</span>
+            </Label>
+            <div className="bg-input/50 flex items-center gap-4 rounded-3xl px-3 py-1">
+              {currentPicture ? (
+                <Image
+                  src={currentPicture}
+                  className={cn(
+                    label === 'avatar'
+                      ? 'size-6 rounded-full'
+                      : 'h-6 w-auto rounded-md',
+                  )}
+                />
+              ) : (
+                <div className="bg-muted flex size-8 items-center justify-center rounded-full">
+                  <ImageIcon />
+                </div>
+              )}
+              <Text className="text-sm first-letter:uppercase">{label}</Text>
+            </div>
+          </FieldSet>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
           <DropdownMenuItem onSelect={openFilePicker}>
@@ -97,6 +104,7 @@ export const PictureController = ({
         </DropdownMenuContent>
       </DropdownMenu>
       <input
+        id="avatar"
         ref={inputRef}
         type="file"
         accept="image/*"

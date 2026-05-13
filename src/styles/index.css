@@ -190,3 +190,17 @@
     animation: none;
   }
 }
+
+/* =========================================================
+   Themes
+========================================================= */
+
+[data-theme='default'] {
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.17 0.1 269);
+}
+
+[data-theme='dark'] {
+  --background: oklch(0.14 0.02 260);
+  --foreground: oklch(0.96 0.01 255);
+}
