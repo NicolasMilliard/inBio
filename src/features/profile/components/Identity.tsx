@@ -1,4 +1,4 @@
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui';
+import { Avatar, AvatarFallback, AvatarImage, Text } from '@/components/ui';
 import type { InBioProfile } from '@/schemas/inBioMetadata.schema';
 
 export const Identity = ({
@@ -12,7 +12,10 @@ export const Identity = ({
 
   return (
     <div className="flex flex-col items-center gap-3 text-center">
-      <Avatar size="xl">
+      <Avatar
+        size="xl"
+        className="animate-[blurFadeIn_0.4s_ease-out_0.15s_both]"
+      >
         <AvatarImage src={avatar} alt={name ?? lensHandle} />
         <AvatarFallback>
           {name
@@ -22,14 +25,19 @@ export const Identity = ({
               : 'U'}
         </AvatarFallback>
       </Avatar>
-      <div className="flex animate-[fadeUp_0.3s_ease_0.15s_both] flex-col items-center">
+      <div className="flex animate-[blurFadeIn_0.4s_ease-out_0.30s_both] flex-col items-center">
         {name && (
-          <h1 className="text-[1.375rem] leading-tight font-bold">{name}</h1>
+          <Text
+            variant="h1"
+            className="text-foreground text-2xl leading-tight font-bold"
+          >
+            {name}
+          </Text>
         )}
         {bio && (
-          <p className="mt-2 max-w-prose leading-relaxed tracking-tight">
+          <Text className="mt-2 max-w-prose leading-relaxed tracking-tight">
             {bio}
-          </p>
+          </Text>
         )}
       </div>
     </div>

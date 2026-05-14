@@ -1,6 +1,6 @@
 export const Branding = () => {
   return (
-    <p className="text-foreground mt-auto animate-[fadeUp_0.4s_ease_0.35s_both] pt-2 text-center text-xs">
+    <p className="text-foreground mt-auto animate-[blurFadeIn_0.4s_ease-out_0.90s_both] pt-2 text-center text-xs">
       Powered by{' '}
       <a
         href="https://inbio.social"

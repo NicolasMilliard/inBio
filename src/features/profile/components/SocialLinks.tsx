@@ -19,7 +19,7 @@ export const SocialLinks = ({ socialLinks }: { socialLinks?: LensLink[] }) => {
 
         return (
           <Tooltip key={socialLink.key}>
-            <TooltipTrigger>
+            <TooltipTrigger className="animate-[blurFadeIn_0.4s_ease-out_0.60s_both]">
               <a
                 href={socialLink.value}
                 target="_blank"

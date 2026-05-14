@@ -7,7 +7,7 @@ export const LinksSection = ({ links }: { links?: LensLink[] }) => {
   if (!links || links.length === 0) return null;
 
   return (
-    <>
+    <div className="animate-[blurFadeIn_0.4s_ease-out_0.75s_both]">
       {links.map((link) => (
         <LinkButton
           key={link.key}
@@ -15,6 +15,6 @@ export const LinksSection = ({ links }: { links?: LensLink[] }) => {
           label={formatUrlLabel(link.value)}
         />
       ))}
-    </>
+    </div>
   );
 };
