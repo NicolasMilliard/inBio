@@ -1,0 +1,4 @@
+[install]
+# Bun uses seconds.
+# 86400 seconds = 1 day.
+minimumReleaseAge = 86400
