@@ -7,7 +7,9 @@ import {
   CoverPictureSection,
   EditorForm,
   IdentitySection,
+  LinksSection,
   SidebarEditor,
+  SocialLinksSection,
   StatisticsSection,
 } from '@/features/editor/components';
 import { EditorProvider } from '../context/editor.context';
@@ -45,6 +47,8 @@ export const EditorScreen = ({
                   profile={inBioMetadata?.profile}
                 />
                 <StatisticsSection {...statsData} />
+                <SocialLinksSection />
+                <LinksSection />
                 <BrandingSection />
               </section>
             </div>
