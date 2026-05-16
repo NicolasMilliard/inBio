@@ -22,7 +22,7 @@ export const EditableSocialLinks = () => {
   if (!socialLinks?.length) return null;
 
   return (
-    <div className="flex max-w-prose flex-wrap items-center gap-3">
+    <div className="flex max-w-prose flex-wrap items-center">
       {socialLinks.map((link, index) => {
         if (!link.url) return null;
 
@@ -64,7 +64,7 @@ const EditableSocialLink = ({
         <Button
           variant="ghost"
           size="icon"
-          className="text-foreground hover:text-primary cursor-pointer transition will-change-transform active:scale-[0.98] active:shadow-inner"
+          className="text-foreground hover:text-primary cursor-pointer transition will-change-transform hover:bg-transparent active:scale-[0.98] active:shadow-inner"
         >
           {icon}
         </Button>

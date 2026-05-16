@@ -1,4 +1,5 @@
 import { getHostname } from '@/helpers';
+import { cn } from '@/lib/utils';
 import { useState } from 'react';
 
 import { Image } from '@/components/ui';
@@ -8,9 +9,15 @@ type LinkButtonProps = {
   href?: string;
   label: string;
   onClick?: () => void;
+  className?: string;
 };
 
-export const LinkButton = ({ href, label, onClick }: LinkButtonProps) => {
+export const LinkButton = ({
+  href,
+  label,
+  onClick,
+  className = '',
+}: LinkButtonProps) => {
   const isButton = !!onClick;
 
   const hostname = getHostname(href);
@@ -46,7 +53,7 @@ export const LinkButton = ({ href, label, onClick }: LinkButtonProps) => {
       };
 
   return (
-    <div className="mb-4 w-full max-w-prose animate-[fadeUp_0.3s_ease_both]">
+    <div className={cn('w-full max-w-prose', className)}>
       <Wrapper
         {...wrapperProps}
         className="group bg-muted/50 text-foreground hover:bg-muted/80 active:bg-muted focus-visible:ring-primary/20 flex w-full cursor-pointer items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-150 will-change-transform focus-visible:ring-2 focus-visible:outline-none active:scale-[0.98] active:shadow-inner"

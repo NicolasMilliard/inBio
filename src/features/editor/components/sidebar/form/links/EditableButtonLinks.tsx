@@ -99,7 +99,7 @@ export const EditableButtonLinks = () => {
           }}
         >
           <DialogTrigger asChild>
-            <LinkButton label={formatUrlLabel(link)} />
+            <LinkButton label={formatUrlLabel(link)} className="mb-4" />
           </DialogTrigger>
 
           <DialogContent>

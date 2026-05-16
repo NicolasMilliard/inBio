@@ -3,7 +3,7 @@ import type { LensLink } from '@/schemas/inBioMetadata.schema';
 
 import { LinkButton } from '@/features/profile/components';
 
-export const LinksSection = ({ links }: { links?: LensLink[] }) => {
+export const Links = ({ links }: { links?: LensLink[] }) => {
   if (!links || links.length === 0) return null;
 
   return (

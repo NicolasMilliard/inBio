@@ -50,7 +50,7 @@ function buildDefaultValues(inBioMetadata: InBioMetadata): MetadataFormValues {
   };
 }
 
-function buildSocialLinkAttributes(
+export function buildSocialLinkAttributes(
   socialLinks: MetadataFormValues['socialLinks'],
 ) {
   return (socialLinks ?? [])
@@ -62,7 +62,7 @@ function buildSocialLinkAttributes(
     }));
 }
 
-function buildLinkAttributes(links: MetadataFormValues['links']) {
+export function buildLinkAttributes(links: MetadataFormValues['links']) {
   return (links ?? [])
     .filter(Boolean) // guard against empty strings
     .map((l) => {

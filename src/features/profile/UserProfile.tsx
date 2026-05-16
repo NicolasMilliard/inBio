@@ -8,7 +8,7 @@ import {
   Branding,
   CoverPicture,
   Identity,
-  LinksSection,
+  Links,
   NotFoundScreen,
   SocialLinks,
   Statistics,
@@ -57,7 +57,7 @@ const UserProfile = ({ lensHandle }: { lensHandle: string }) => {
         <Identity lensHandle={lensHandle} profile={profile} />
         <Statistics followers={followers} following={following} posts={posts} />
         <SocialLinks socialLinks={profile.socialLinks} />
-        <LinksSection links={profile.links} />
+        <Links links={profile.links} />
         <Branding />
       </section>
     </main>
