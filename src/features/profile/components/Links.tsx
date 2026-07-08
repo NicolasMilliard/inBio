@@ -1,5 +1,5 @@
 import { formatUrlLabel } from '@/helpers';
-import type { LensLink } from '@/schemas/inBioMetadata.schema';
+import type { LensLink } from '@/schemas/threeBioMetadata.schema';
 
 import { LinkButton } from '@/features/profile/components';
 

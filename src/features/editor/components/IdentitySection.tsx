@@ -1,4 +1,4 @@
-import type { InBioProfile } from '@/schemas/inBioMetadata.schema';
+import type { ThreeBioProfile } from '@/schemas/threeBioMetadata.schema';
 import { useFormContext, useWatch } from 'react-hook-form';
 import type { MetadataFormValues } from '../schemas/metadataForm.schema';
 
@@ -9,7 +9,7 @@ export const IdentitySection = ({
   profile,
 }: {
   lensHandle: string;
-  profile: InBioProfile;
+  profile: ThreeBioProfile;
 }) => {
   const { control } = useFormContext<MetadataFormValues>();
   const formAvatar = useWatch({ control, name: 'avatar.preview' }) ?? undefined;

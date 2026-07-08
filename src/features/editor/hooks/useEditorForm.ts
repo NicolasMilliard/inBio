@@ -12,7 +12,7 @@ import {
   formatSocialLink,
   getHostname,
 } from '@/helpers';
-import type { InBioMetadata } from '@/schemas/inBioMetadata.schema';
+import type { ThreeBioMetadata } from '@/schemas/threeBioMetadata.schema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
@@ -28,9 +28,11 @@ const storageClient = StorageClient.create();
 // Stable ordered list of social platforms delivered from SOCIAL_MAP.
 const SOCIAL_PLATFORMS = Array.from(Object.keys(SOCIAL_MAP));
 
-function buildDefaultValues(inBioMetadata: InBioMetadata): MetadataFormValues {
-  const profile = inBioMetadata.profile;
-  const theme = inBioMetadata.theme;
+function buildDefaultValues(
+  threeBioMetadata: ThreeBioMetadata,
+): MetadataFormValues {
+  const profile = threeBioMetadata.profile;
+  const theme = threeBioMetadata.theme;
 
   return {
     avatar: { preview: profile?.avatar ?? null },
@@ -73,14 +75,17 @@ export function buildLinkAttributes(links: MetadataFormValues['links']) {
     });
 }
 
-export function useEditorForm(account: Account, inBioMetadata: InBioMetadata) {
+export function useEditorForm(
+  account: Account,
+  threeBioMetadata: ThreeBioMetadata,
+) {
   const { data: sessionClient } = useSessionClient();
   const { data: walletClient } = useWalletClient();
   const acl = lensAccountOnly(account.address, chains.mainnet.id);
 
   const methods = useForm<MetadataFormValues>({
     resolver: zodResolver(metadataFormSchema),
-    defaultValues: buildDefaultValues(inBioMetadata),
+    defaultValues: buildDefaultValues(threeBioMetadata),
   });
 
   const onSubmit = async (values: MetadataFormValues) => {
@@ -111,8 +116,8 @@ export function useEditorForm(account: Account, inBioMetadata: InBioMetadata) {
       // Step 3: Build and upload metadata JSON
       toast.loading('Uploading metadata...', { id: toastId });
 
-      const nextInBioMetadata = {
-        ...inBioMetadata,
+      const nextThreeBioMetadata = {
+        ...threeBioMetadata,
         profile: {
           avatar: avatarUri ?? undefined,
           coverPicture: coverPictureUri ?? undefined,
@@ -128,7 +133,7 @@ export function useEditorForm(account: Account, inBioMetadata: InBioMetadata) {
         },
       };
 
-      const data = formatMetadataBeforeUpload(account, nextInBioMetadata);
+      const data = formatMetadataBeforeUpload(account, nextThreeBioMetadata);
       const { uri: metadataUri } = await storageClient.uploadAsJson(data, {
         acl,
       });

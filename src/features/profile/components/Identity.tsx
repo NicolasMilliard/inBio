@@ -1,12 +1,12 @@
 import { Avatar, AvatarFallback, AvatarImage, Text } from '@/components/ui';
-import type { InBioProfile } from '@/schemas/inBioMetadata.schema';
+import type { ThreeBioProfile } from '@/schemas/threeBioMetadata.schema';
 
 export const Identity = ({
   lensHandle,
   profile,
 }: {
   lensHandle: string;
-  profile: InBioProfile;
+  profile: ThreeBioProfile;
 }) => {
   const { avatar, name, bio } = profile;
 

@@ -1,4 +1,4 @@
-import mockedIllustration from './inbio-analytics-illustration.svg';
+import mockedIllustration from './analytics-illustration.svg';
 
 export const analyticsImages: Record<string, string> = {
   mockedIllustration,

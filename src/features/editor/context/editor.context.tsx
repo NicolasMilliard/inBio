@@ -1,12 +1,12 @@
 import { createContext, useContext } from 'react';
 
-import type { InBioMetadata } from '@/schemas/inBioMetadata.schema';
+import type { ThreeBioMetadata } from '@/schemas/threeBioMetadata.schema';
 import type { Account, AccountStats } from '@lens-protocol/react';
 
 type EditorContextValue = {
   account: Account;
   stats?: AccountStats;
-  inBioMetadata: InBioMetadata;
+  threeBioMetadata: ThreeBioMetadata;
 };
 
 const EditorContext = createContext<EditorContextValue | null>(null);

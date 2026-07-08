@@ -1,4 +1,4 @@
-import { INBIO_URL } from '@/constants';
+import { THREEBIO_URL } from '@/constants';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { FormProvider, useForm } from 'react-hook-form';
 import {
@@ -45,7 +45,7 @@ export const ProfileCheckingForm = () => {
             aria-invalid={errors.link ? 'true' : 'false'}
           >
             <InputGroupAddon>
-              <span>{INBIO_URL}</span>
+              <span>{THREEBIO_URL}</span>
             </InputGroupAddon>
             <InputGroupInput
               placeholder="YourLensHandle"

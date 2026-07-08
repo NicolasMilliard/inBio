@@ -1,4 +1,4 @@
-import { formatToInBioMetadata } from '@/helpers';
+import { formatToThreeBioMetadata } from '@/helpers';
 import type { Account, AccountStats } from '@lens-protocol/react';
 
 import { SidebarTrigger } from '@/components/ui';
@@ -22,7 +22,7 @@ export const EditorScreen = ({
   account: Account;
   stats?: AccountStats;
 }) => {
-  const inBioMetadata = formatToInBioMetadata(account);
+  const threeBioMetadata = formatToThreeBioMetadata(account);
   const statsData = {
     followers: stats?.graphFollowStats?.followers,
     following: stats?.graphFollowStats?.following,
@@ -30,7 +30,7 @@ export const EditorScreen = ({
   };
 
   return (
-    <EditorProvider value={{ account, stats, inBioMetadata }}>
+    <EditorProvider value={{ account, stats, threeBioMetadata }}>
       <EditorForm>
         <div className="flex h-dvh w-dvw">
           <SidebarEditor />
@@ -43,11 +43,11 @@ export const EditorScreen = ({
               <CoverPictureSection />
 
               <EditorProfilePreview
-                defaultTheme={inBioMetadata?.theme?.name ?? 'light'}
+                defaultTheme={threeBioMetadata?.theme?.name ?? 'light'}
               >
                 <IdentitySection
                   lensHandle={account.username?.localName ?? ''}
-                  profile={inBioMetadata?.profile}
+                  profile={threeBioMetadata?.profile}
                 />
                 <StatisticsSection {...statsData} />
                 <SocialLinksSection />

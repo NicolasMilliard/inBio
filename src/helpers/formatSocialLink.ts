@@ -1,5 +1,5 @@
 import type { PlatformName } from '@/constants';
-import type { LensLink } from '@/schemas/inBioMetadata.schema';
+import type { LensLink } from '@/schemas/threeBioMetadata.schema';
 import { getHostname } from './getHostname';
 
 export type SocialLink = {

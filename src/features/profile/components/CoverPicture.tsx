@@ -1,9 +1,9 @@
-import type { InBioProfile } from '@/schemas/inBioMetadata.schema';
+import type { ThreeBioProfile } from '@/schemas/threeBioMetadata.schema';
 
 export const CoverPicture = ({
   coverPicture,
 }: {
-  coverPicture: InBioProfile['coverPicture'] | null;
+  coverPicture: ThreeBioProfile['coverPicture'] | null;
 }) => {
   return (
     <>

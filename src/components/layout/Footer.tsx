@@ -1,12 +1,12 @@
 import { Link } from '@tanstack/react-router';
-import { InBioLogo } from '../icons/InBioLogo';
+import { Logo } from '../icons/Logo';
 
 export const Footer = () => {
   return (
     <footer className="bg-primary text-primary-foreground w-full px-4">
       <div className="mx-auto flex max-w-6xl gap-12 py-8">
         <Link to="/">
-          <InBioLogo />
+          <Logo />
         </Link>
         <ul>
           <li>

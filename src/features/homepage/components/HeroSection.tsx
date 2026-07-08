@@ -1,5 +1,5 @@
 import { heroImages } from '@/assets/hero';
-import { INBIO_GITHUB_URL } from '@/constants';
+import { THREEBIO_GITHUB_URL } from '@/constants';
 
 import { Image, Text } from '@/components/ui';
 import { ProfileCheckingForm } from './ProfileCheckingForm';
@@ -16,10 +16,10 @@ export const HeroSection = () => {
             Finally, your decentralized link&nbsp;in&nbsp;bio.
           </Text>
           <Text className="max-w-97 animate-[blurFadeIn_0.8s_ease-out_0.15s_forwards] opacity-0">
-            It's time to take back control of your digital identity. inBio is
+            It's time to take back control of your digital identity. 3bio is
             decentralized,{' '}
             <a
-              href={INBIO_GITHUB_URL}
+              href={THREEBIO_GITHUB_URL}
               target="_blank"
               rel="noopener noreferrer"
               className="text-primary font-bold hover:underline"

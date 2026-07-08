@@ -1,5 +1,5 @@
-import { INBIO_ATTRIBUTE_KEY } from '@/constants';
-import type { InBioMetadata } from '@/schemas/inBioMetadata.schema';
+import { THREEBIO_ATTRIBUTE_KEY } from '@/constants';
+import type { ThreeBioMetadata } from '@/schemas/threeBioMetadata.schema';
 import {
   account as createMetadata,
   MetadataAttributeType,
@@ -27,15 +27,15 @@ const upsertAttribute = (
 
 export const formatMetadataBeforeUpload = (
   account: Account,
-  inBioMetadata: InBioMetadata,
+  threeBioMetadata: ThreeBioMetadata,
 ) => {
   const prevMetadata = account.metadata;
   const prevAttributes = prevMetadata?.attributes ?? [];
 
   const nextAttributes = upsertAttribute(
     prevAttributes,
-    INBIO_ATTRIBUTE_KEY,
-    JSON.stringify(inBioMetadata),
+    THREEBIO_ATTRIBUTE_KEY,
+    JSON.stringify(threeBioMetadata),
   );
 
   return createMetadata({

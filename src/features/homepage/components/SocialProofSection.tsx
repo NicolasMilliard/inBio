@@ -30,7 +30,7 @@ export const SocialProofSection = () => {
           </span>
         </span>
         <br />
-        is already on inBio.
+        is already on 3bio.
       </Text>
       <CarouselCreators />
     </section>

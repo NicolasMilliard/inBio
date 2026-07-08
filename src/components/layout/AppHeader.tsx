@@ -2,7 +2,7 @@ import { useMatchRoute } from '@tanstack/react-router';
 
 import { AuthButton } from '@/features/auth/components';
 import { Link } from '@tanstack/react-router';
-import { InBioLogo } from '../icons/InBioLogo';
+import { Logo } from '../icons/Logo';
 import { Button } from '../ui/button';
 
 export const AppHeader = () => {
@@ -22,7 +22,7 @@ export const AppHeader = () => {
 
       <div className="relative mx-auto flex h-20 max-w-6xl items-center justify-between px-4">
         <Link to="/">
-          <InBioLogo isAtTop />
+          <Logo isAtTop />
         </Link>
 
         <nav className="flex items-center gap-2">

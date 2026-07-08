@@ -1,6 +1,6 @@
 import { cn } from '@/lib/utils';
 
-export const InBioLogo = ({ isAtTop = false }: { isAtTop?: boolean }) => {
+export const Logo = ({ isAtTop = false }: { isAtTop?: boolean }) => {
   return (
     <span
       className={cn(
@@ -8,7 +8,7 @@ export const InBioLogo = ({ isAtTop = false }: { isAtTop?: boolean }) => {
         isAtTop ? 'rounded-b-lg' : 'rounded-lg',
       )}
     >
-      inBio
+      3bio
     </span>
   );
 };

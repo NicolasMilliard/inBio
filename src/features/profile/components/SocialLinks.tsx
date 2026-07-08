@@ -1,6 +1,6 @@
 import { type PlatformName, SOCIAL_MAP } from '@/constants';
 import { formatSocialLink } from '@/helpers';
-import type { LensLink } from '@/schemas/inBioMetadata.schema';
+import type { LensLink } from '@/schemas/threeBioMetadata.schema';
 
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui';
 

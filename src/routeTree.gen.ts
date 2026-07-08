@@ -66,12 +66,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to: '/dashboard' | '/$pageId' | '/' | '/edit'
   id:
-    | '__root__'
-    | '/_app'
-    | '/_app/dashboard'
-    | '/$pageId/'
-    | '/_app/'
-    | '/edit/'
+    '__root__' | '/_app' | '/_app/dashboard' | '/$pageId/' | '/_app/' | '/edit/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {

@@ -13,8 +13,9 @@ import {
 import { PictureController } from './form';
 
 export const IdentityGroup = () => {
-  const { account, inBioMetadata } = useEditorContext();
-  const avatarPath = inBioMetadata.profile?.avatar ?? account.metadata?.picture;
+  const { account, threeBioMetadata } = useEditorContext();
+  const avatarPath =
+    threeBioMetadata.profile?.avatar ?? account.metadata?.picture;
 
   return (
     <SidebarGroup>
@@ -32,9 +33,9 @@ export const IdentityGroup = () => {
 
 const NameInput = () => {
   const { register } = useFormContext<MetadataFormValues>();
-  const { account, inBioMetadata } = useEditorContext();
+  const { account, threeBioMetadata } = useEditorContext();
   const name = account.metadata?.name;
-  const inBioName = inBioMetadata.profile?.name;
+  const threeBioName = threeBioMetadata.profile?.name;
 
   return (
     <FieldSet className="gap-2">
@@ -42,7 +43,7 @@ const NameInput = () => {
       <Input
         id="name"
         {...register('name')}
-        placeholder={inBioName ?? name ?? 'Your name'}
+        placeholder={threeBioName ?? name ?? 'Your name'}
       />
     </FieldSet>
   );
@@ -50,9 +51,9 @@ const NameInput = () => {
 
 const BioInput = () => {
   const { register } = useFormContext<MetadataFormValues>();
-  const { account, inBioMetadata } = useEditorContext();
+  const { account, threeBioMetadata } = useEditorContext();
   const bio = account.metadata?.bio;
-  const inBioBio = inBioMetadata.profile?.bio;
+  const threeBioBio = threeBioMetadata.profile?.bio;
 
   return (
     <FieldSet className="gap-2">
@@ -61,7 +62,7 @@ const BioInput = () => {
         id="bio"
         {...register('bio')}
         rows={1}
-        defaultValue={inBioBio ?? bio ?? undefined}
+        defaultValue={threeBioBio ?? bio ?? undefined}
         placeholder="Write something about yourself in your bio to let people know more about you."
       />
     </FieldSet>

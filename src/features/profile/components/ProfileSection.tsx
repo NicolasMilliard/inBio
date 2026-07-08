@@ -1,12 +1,12 @@
 import { cn } from '@/lib/utils';
-import type { InBioTheme } from '@/schemas/inBioMetadata.schema';
+import type { ThreeBioTheme } from '@/schemas/threeBioMetadata.schema';
 
 export const ProfileSection = ({
   children,
   dataTheme,
 }: {
   children: React.ReactNode;
-  dataTheme?: InBioTheme['name'];
+  dataTheme?: ThreeBioTheme['name'];
 }) => {
   return (
     <section

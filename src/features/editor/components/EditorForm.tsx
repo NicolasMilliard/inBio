@@ -6,8 +6,8 @@ import { FormProvider } from 'react-hook-form';
 import { UnsavedChangesDialog } from './UnsavedChangesDialog';
 
 export const EditorForm = ({ children }: { children: React.ReactNode }) => {
-  const { account, inBioMetadata } = useEditorContext();
-  const { methods, onSubmit } = useEditorForm(account, inBioMetadata);
+  const { account, threeBioMetadata } = useEditorContext();
+  const { methods, onSubmit } = useEditorForm(account, threeBioMetadata);
 
   const {
     formState: { isDirty },

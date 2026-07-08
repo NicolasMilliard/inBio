@@ -1,4 +1,4 @@
-import { formatToInBioMetadata } from '@/helpers';
+import { formatToThreeBioMetadata } from '@/helpers';
 import { useTheme } from '@/hooks/useTheme';
 import { useAccount, useAccountStats } from '@lens-protocol/react';
 
@@ -26,7 +26,7 @@ const UserProfile = ({ lensHandle }: { lensHandle: string }) => {
   });
 
   const themeName =
-    (account && formatToInBioMetadata(account)?.theme?.name) ?? 'default';
+    (account && formatToThreeBioMetadata(account)?.theme?.name) ?? 'default';
 
   useTheme(themeName);
 
@@ -36,7 +36,7 @@ const UserProfile = ({ lensHandle }: { lensHandle: string }) => {
     return <NotFoundScreen lensHandle={lensHandle} />;
   }
 
-  const profile = formatToInBioMetadata(account)?.profile;
+  const profile = formatToThreeBioMetadata(account)?.profile;
   const followers = stats?.graphFollowStats?.followers;
   const following = stats?.graphFollowStats?.following;
   const posts = stats?.feedStats?.posts;

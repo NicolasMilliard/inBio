@@ -1,5 +1,5 @@
-import { getInBioProfile } from '@/helpers';
-import type { InBioProfile } from '@/schemas/inBioMetadata.schema';
+import { getThreeBioProfile } from '@/helpers';
+import type { ThreeBioProfile } from '@/schemas/threeBioMetadata.schema';
 import { useAccountsAvailable } from '@lens-protocol/react';
 import { useConnection } from 'wagmi';
 import { useLensLogin } from '../hooks/useLensLogin';
@@ -39,14 +39,17 @@ export const ProfileSelectionScreen = () => {
 
       <div className="grid w-full max-w-6xl grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {accounts?.items.map((item) => {
-          const inBioProfile: InBioProfile | undefined = getInBioProfile(
-            item.account.metadata?.attributes,
-          );
+          const threeBioProfile: ThreeBioProfile | undefined =
+            getThreeBioProfile(item.account.metadata?.attributes);
           const name =
-            inBioProfile?.name ?? item.account.username?.localName ?? 'Unnamed';
-          const avatar = inBioProfile?.avatar ?? item.account.metadata?.picture;
+            threeBioProfile?.name ??
+            item.account.username?.localName ??
+            'Unnamed';
+          const avatar =
+            threeBioProfile?.avatar ?? item.account.metadata?.picture;
           const coverPicture =
-            inBioProfile?.coverPicture ?? item.account.metadata?.coverPicture;
+            threeBioProfile?.coverPicture ??
+            item.account.metadata?.coverPicture;
           const avatarFallback =
             item.account.username?.localName?.[0]?.toUpperCase() ??
             name[0]?.toUpperCase() ??

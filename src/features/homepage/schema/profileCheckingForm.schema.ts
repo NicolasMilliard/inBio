@@ -3,7 +3,7 @@ import { z } from 'zod';
 export const normalizeProfilePath = (value: string) =>
   value
     .trim()
-    .replace(/^(?:https?:\/\/)?(?:www\.)?inbio\.social\/?/i, '')
+    .replace(/^(?:https?:\/\/)?(?:www\.)?3bio\.social\/?/i, '')
     .replace(/^\/+/, '')
     .replace(/\/+$/, '');
 

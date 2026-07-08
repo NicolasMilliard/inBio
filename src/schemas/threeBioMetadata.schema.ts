@@ -24,7 +24,7 @@ export const profileSchema = z.object({
   links: z.array(linkSchema).optional(),
 });
 
-export type InBioProfile = z.infer<typeof profileSchema>;
+export type ThreeBioProfile = z.infer<typeof profileSchema>;
 
 const themeSchema = z.object({
   name: z.enum(['light', 'dark']).default('light'),
@@ -32,7 +32,7 @@ const themeSchema = z.object({
   displayBranding: z.boolean().default(true),
 });
 
-export type InBioTheme = z.infer<typeof themeSchema>;
+export type ThreeBioTheme = z.infer<typeof themeSchema>;
 
 const settingsSchema = z.object({
   subscription: z.object({
@@ -41,10 +41,10 @@ const settingsSchema = z.object({
   }),
 });
 
-export const inBioMetadataSchema = z.object({
+export const threeBioMetadataSchema = z.object({
   profile: profileSchema.optional(),
   theme: themeSchema.optional(),
   settings: settingsSchema.optional(),
 });
 
-export type InBioMetadata = z.infer<typeof inBioMetadataSchema>;
+export type ThreeBioMetadata = z.infer<typeof threeBioMetadataSchema>;

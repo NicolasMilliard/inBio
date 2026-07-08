@@ -1,5 +1,5 @@
 import type { MetadataFormValues } from '@/features/editor/schemas/metadataForm.schema';
-import type { InBioTheme } from '@/schemas/inBioMetadata.schema';
+import type { ThreeBioTheme } from '@/schemas/threeBioMetadata.schema';
 import { useFormContext, useWatch } from 'react-hook-form';
 
 import {
@@ -23,7 +23,7 @@ export const ThemeSelector = () => {
     <Select
       value={theme}
       onValueChange={(value) => {
-        setValue('theme', value as InBioTheme['name'], {
+        setValue('theme', value as ThreeBioTheme['name'], {
           shouldDirty: true,
           shouldTouch: true,
           shouldValidate: true,
