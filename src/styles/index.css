@@ -40,6 +40,19 @@
 
   --cover-background: var(--background);
   --cover-background-dot: var(--muted);
+
+  --color-background: var(--background);
+  --color-avatar-background: var(--avatar-background);
+  --color-name-text: var(--name-text);
+  --color-bio-text: var(--bio-text);
+  --color-icons: var(--icons);
+  --color-statistics-background: var(--statistics-background);
+  --color-statistics-title: var(--statistics-title);
+  --color-statistics-number: var(--statistics-number);
+  --color-content-background: var(--content-background);
+  --color-links-text: var(--links-text);
+  --color-links-background: var(--links-background);
+  --color-branding-text: var(--branding-text);
 }
 
 :root {
@@ -219,4 +232,48 @@
 
   --cover-background: var(--background);
   --cover-background-dot: var(--muted);
+}
+
+/* =========================================================
+   Themes - v2
+========================================================= */
+[data-theme='default'] {
+  --background: oklch(0.98 0.0162 322.69);
+  --avatar-background: oklch(0.8797 0.108 324.91);
+  --name-text: oklch(0.4509 0.2989 266.03);
+  --bio-text: oklch(0.1683 0.1042 269.45);
+  --icons: oklch(0.4509 0.2989 266.03);
+  --statistics-background: oklch(1 0 0);
+  --statistics-title: oklch(0.7556 0.0984 285.11);
+  --statistics-number: oklch(0.4509 0.2989 266.03);
+  --content-background: oklch(0.8797 0.108 324.91);
+  --links-text: oklch(0.7556 0.0984 285.11);
+  --links-background: oklch(1 0 0);
+  --branding-text: oklch(0.1683 0.1042 269.45);
+
+  html,
+  body {
+    background-color: var(--background);
+  }
+}
+
+/* TEST: TO REMOVE WHEN COMPLETE */
+[data-theme='test'] {
+  --background: red;
+  --avatar-background: green;
+  --name-text: white;
+  --bio-text: yellow;
+  --icons: purple;
+  --statistics-background: blue;
+  --statistics-title: purple;
+  --statistics-number: green;
+  --content-background: purple;
+  --links-text: lightgrey;
+  --links-background: red;
+  --branding-text: yellow;
+
+  html,
+  body {
+    background-color: var(--background);
+  }
 }

@@ -4,13 +4,11 @@ import { useAccount, useAccountStats } from '@lens-protocol/react';
 
 import { SpinnerScreen } from '@/components/ui';
 import {
-  Branding,
-  CoverPicture,
+  // Branding,
+  // CoverPicture,
   Identity,
-  Links,
+  // Links,
   NotFoundScreen,
-  ProfileSection,
-  SocialLinks,
   Statistics,
 } from './components';
 
@@ -43,14 +41,22 @@ const UserProfile = ({ lensHandle }: { lensHandle: string }) => {
 
   return (
     <main className="flex min-h-dvh flex-1 items-center justify-center">
-      <CoverPicture coverPicture={profile.coverPicture} />
-      <ProfileSection>
-        <Identity lensHandle={lensHandle} profile={profile} />
-        <Statistics followers={followers} following={following} posts={posts} />
-        <SocialLinks socialLinks={profile.socialLinks} />
-        <Links links={profile.links} />
-        <Branding />
-      </ProfileSection>
+      <div className="flex w-full max-w-6xl flex-col gap-8 px-4 md:flex-row md:gap-16">
+        <div>
+          <Identity lensHandle={lensHandle} profile={profile} />
+          <Statistics
+            followers={followers}
+            following={following}
+            posts={posts}
+          />
+        </div>
+        <div>droite</div>
+      </div>
+      {/* <CoverPicture coverPicture={profile.coverPicture} />
+      <Statistics followers={followers} following={following} posts={posts} />
+      <SocialLinks socialLinks={profile.socialLinks} />
+      <Links links={profile.links} />
+      <Branding /> */}
     </main>
   );
 };
