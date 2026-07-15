@@ -47,7 +47,7 @@ export const MenuSocialIcon = ({
                 key={value}
                 value={label}
                 onSelect={() => handleSelect(value)}
-                className="cursor-pointer gap-2"
+                className="gap-2"
               >
                 <Icon className="text-primary size-4 shrink-0" />
                 <span className="flex-1 text-sm">{label}</span>
@@ -64,7 +64,7 @@ export const MenuSocialIcon = ({
                   key={value}
                   value={label}
                   onSelect={() => handleSelect(value)}
-                  className="cursor-pointer gap-2"
+                  className="gap-2"
                 >
                   <Icon className="text-primary size-4 shrink-0" />
                   <span className="flex-1 text-sm">{label}</span>

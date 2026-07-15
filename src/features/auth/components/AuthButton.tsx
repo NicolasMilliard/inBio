@@ -65,9 +65,7 @@ export const AuthButton = () => {
             key={p.address}
             onClick={() => switchProfile(p.address)}
             className={
-              p.isActive
-                ? 'bg-muted hover:bg-muted!'
-                : 'hover:bg-primary/40! cursor-pointer'
+              p.isActive ? 'bg-muted hover:bg-muted!' : 'hover:bg-primary/40!'
             }
           >
             <Avatar size="sm">
@@ -87,7 +85,7 @@ export const AuthButton = () => {
         <DropdownMenuItem
           onClick={disconnectWallet}
           disabled={isDisconnecting}
-          className="text-destructive hover:bg-destructive! hover:text-primary-foreground! cursor-pointer"
+          className="text-destructive hover:bg-destructive! hover:text-primary-foreground!"
         >
           Disconnect
         </DropdownMenuItem>

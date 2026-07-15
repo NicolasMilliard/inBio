@@ -117,7 +117,7 @@ const EditableSocialLink = ({
           type="button"
           variant="ghost"
           size="icon"
-          className="text-foreground hover:text-primary cursor-pointer transition will-change-transform hover:bg-transparent active:scale-[0.98] active:shadow-inner"
+          className="text-foreground hover:text-primary transition will-change-transform hover:bg-transparent active:scale-[0.98] active:shadow-inner"
         >
           {icon}
         </Button>

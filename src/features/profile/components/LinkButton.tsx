@@ -110,7 +110,7 @@ export const LinkButton = forwardRef<
           {...(elementProps as ButtonHTMLAttributes<HTMLButtonElement>)}
           ref={ref as Ref<HTMLButtonElement>}
           type="button"
-          className="group bg-links-background text-links-text hover:bg-links-background/90 focus-visible:ring-name-text flex w-full cursor-pointer items-center gap-2 rounded-2xl px-3 py-3 text-base font-normal transition-all duration-150 will-change-transform focus-visible:ring-2 focus-visible:outline-none active:scale-[0.98] active:shadow-inner"
+          className="group bg-links-background text-links-text hover:bg-links-background/90 focus-visible:ring-name-text flex w-full items-center gap-2 rounded-2xl px-3 py-3 text-base font-normal transition-all duration-150 will-change-transform focus-visible:ring-2 focus-visible:outline-none active:scale-[0.98] active:shadow-inner"
         >
           {content}
         </button>
@@ -121,7 +121,7 @@ export const LinkButton = forwardRef<
           href={href}
           target="_blank"
           rel="ugc noopener noreferrer"
-          className="group bg-links-background text-links-text hover:bg-links-background/90 focus-visible:ring-name-text flex w-full cursor-pointer items-center gap-2 rounded-2xl px-3 py-3 text-base font-normal transition-all duration-150 will-change-transform focus-visible:ring-2 focus-visible:outline-none active:scale-[0.98] active:shadow-inner"
+          className="group bg-links-background text-links-text hover:bg-links-background/90 focus-visible:ring-name-text flex w-full items-center gap-2 rounded-2xl px-3 py-3 text-base font-normal transition-all duration-150 will-change-transform focus-visible:ring-2 focus-visible:outline-none active:scale-[0.98] active:shadow-inner"
         >
           {content}
         </a>
