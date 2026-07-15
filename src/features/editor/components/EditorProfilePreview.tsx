@@ -1,25 +1,82 @@
-import type { ThreeBioThemeName } from '@/constants';
+import {
+  SOCIAL_MAP,
+  THREE_BIO_DEFAULT_THEME,
+  type PlatformName,
+} from '@/constants';
 import { useFormContext, useWatch } from 'react-hook-form';
 import type { MetadataFormValues } from '../schemas/metadataForm.schema';
 
-import { ProfileSection } from '@/features/profile/components';
+import {
+  ProfileLayout,
+  type ProfileStatistics,
+  type ProfileViewModel,
+} from '@/features/profile/components';
 
 export const EditorProfilePreview = ({
-  children,
-  defaultTheme,
+  lensHandle,
+  statistics,
 }: {
-  children: React.ReactNode;
-  defaultTheme: ThreeBioThemeName;
+  lensHandle: string;
+  statistics?: ProfileStatistics;
 }) => {
   const { control } = useFormContext<MetadataFormValues>();
-
-  const watchedTheme = useWatch({
+  const [
+    avatar,
+    name,
+    bio,
+    socialLinks,
+    links,
+    theme,
+    displayStatistics,
+    displayBranding,
+  ] = useWatch({
     control,
-    name: 'theme',
+    name: [
+      'avatar',
+      'name',
+      'bio',
+      'socialLinks',
+      'links',
+      'theme',
+      'displayStatistics',
+      'displayBranding',
+    ],
   });
+
+  const profile = {
+    avatar: avatar?.preview || undefined,
+    name,
+    bio,
+    socialLinks: (socialLinks ?? []).flatMap(({ platform, url }) => {
+      const value = url?.trim();
+      const platformName = platform as PlatformName;
+
+      return value && platformName in SOCIAL_MAP
+        ? [
+            {
+              key: `editor-social-${platformName}`,
+              platform: platformName,
+              value,
+            },
+          ]
+        : [];
+    }),
+    links: (links ?? []).flatMap((url, index) => {
+      const value = url.trim();
+
+      return value ? [{ key: `editor-link-${index}`, value }] : [];
+    }),
+  } satisfies ProfileViewModel;
+
   return (
-    <ProfileSection dataTheme={watchedTheme ?? defaultTheme}>
-      {children}
-    </ProfileSection>
+    <ProfileLayout
+      lensHandle={lensHandle}
+      profile={profile}
+      statistics={statistics}
+      themeName={theme ?? THREE_BIO_DEFAULT_THEME}
+      displayStatistics={displayStatistics ?? true}
+      displayBranding={displayBranding ?? true}
+      mode="preview"
+    />
   );
 };

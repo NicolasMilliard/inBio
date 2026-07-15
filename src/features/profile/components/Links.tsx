@@ -3,7 +3,13 @@ import type { LensLink } from '@/schemas/threeBioMetadata.schema';
 
 import { LinkButton } from '@/features/profile/components';
 
-export const Links = ({ links }: { links?: LensLink[] }) => {
+export const Links = ({
+  links,
+  interactive = true,
+}: {
+  links?: Pick<LensLink, 'key' | 'value'>[];
+  interactive?: boolean;
+}) => {
   if (!links || links.length === 0) return null;
 
   return (
@@ -16,6 +22,8 @@ export const Links = ({ links }: { links?: LensLink[] }) => {
           key={link.key}
           href={link.value}
           label={formatUrlLabel(link.value)}
+          interactive={interactive}
+          loadFavicon={interactive}
         />
       ))}
     </nav>

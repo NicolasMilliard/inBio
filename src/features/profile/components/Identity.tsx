@@ -6,7 +6,7 @@ export const Identity = ({
   profile,
 }: {
   lensHandle: string;
-  profile: ThreeBioProfile;
+  profile: Pick<ThreeBioProfile, 'avatar' | 'name' | 'bio'>;
 }) => {
   const { avatar, name, bio } = profile;
 

@@ -52,7 +52,7 @@ function buildDefaultValues(
   };
 }
 
-export function buildSocialLinkAttributes(
+function toSocialLinkAttributes(
   socialLinks: MetadataFormValues['socialLinks'],
 ) {
   return (socialLinks ?? [])
@@ -64,7 +64,7 @@ export function buildSocialLinkAttributes(
     }));
 }
 
-export function buildLinkAttributes(links: MetadataFormValues['links']) {
+function toLinkAttributes(links: MetadataFormValues['links']) {
   return (links ?? [])
     .filter(Boolean) // guard against empty strings
     .map((l) => {
@@ -123,8 +123,8 @@ export function useEditorForm(
           coverPicture: coverPictureUri ?? undefined,
           name: values.name,
           bio: values.bio,
-          socialLinks: buildSocialLinkAttributes(values.socialLinks),
-          links: buildLinkAttributes(values.links),
+          socialLinks: toSocialLinkAttributes(values.socialLinks),
+          links: toLinkAttributes(values.links),
         },
         theme: {
           name: values.theme,
@@ -153,7 +153,11 @@ export function useEditorForm(
         return;
       }
 
-      methods.reset(values);
+      methods.reset({
+        ...values,
+        avatar: { preview: avatarUri ?? null },
+        coverPicture: { preview: coverPictureUri ?? null },
+      });
       toast.success('Profile saved!', {
         id: toastId,
         description: 'Your changes are now live.',

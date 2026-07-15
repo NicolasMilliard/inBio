@@ -1,6 +1,6 @@
 import type { MetadataFormValues } from '@/features/editor/schemas/metadataForm.schema';
 import { cn } from '@/lib/utils';
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useFormContext } from 'react-hook-form';
 
 import {
@@ -16,22 +16,30 @@ import {
 import { ImageIcon } from 'lucide-react';
 
 type PictureControllerProps = {
-  picturePath?: string;
   formValue: 'coverPicture' | 'avatar';
+  label: string;
+  description?: string;
 };
 
 export const PictureController = ({
-  picturePath,
   formValue,
+  label,
+  description,
 }: PictureControllerProps) => {
   const { setValue, watch } = useFormContext<MetadataFormValues>();
   const inputRef = useRef<HTMLInputElement>(null);
-  const watchedPreview = watch(`${formValue}.preview`);
+  const currentPicture = watch(`${formValue}.preview`);
+  const normalizedLabel = label.toLowerCase();
+  const inputId = `${formValue}-image`;
 
-  const currentPicture =
-    watchedPreview === undefined ? picturePath : watchedPreview;
-
-  const label = formValue === 'coverPicture' ? 'background' : 'avatar';
+  useEffect(
+    () => () => {
+      if (currentPicture?.startsWith('blob:')) {
+        URL.revokeObjectURL(currentPicture);
+      }
+    },
+    [currentPicture],
+  );
 
   const openFilePicker = () => {
     inputRef.current?.click();
@@ -56,7 +64,7 @@ export const PictureController = ({
     event.target.value = '';
   };
 
-  const removeCoverPicture = () => {
+  const removePicture = () => {
     setValue(
       formValue,
       { file: undefined, preview: null },
@@ -72,15 +80,13 @@ export const PictureController = ({
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <FieldSet className="gap-2">
-            <Label htmlFor="avatar">
-              <span className="first-letter:uppercase">{label}</span>
-            </Label>
+            <Label htmlFor={inputId}>{label}</Label>
             <div className="bg-input/50 flex items-center gap-4 rounded-3xl px-3 py-1">
               {currentPicture ? (
                 <Image
                   src={currentPicture}
                   className={cn(
-                    label === 'avatar'
+                    formValue === 'avatar'
                       ? 'size-6 rounded-full'
                       : 'h-6 w-auto rounded-md',
                   )}
@@ -90,21 +96,26 @@ export const PictureController = ({
                   <ImageIcon />
                 </div>
               )}
-              <Text className="text-sm first-letter:uppercase">{label}</Text>
+              <Text className="text-sm">{label}</Text>
             </div>
+            {description && (
+              <Text className="text-muted-foreground text-xs leading-snug">
+                {description}
+              </Text>
+            )}
           </FieldSet>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
           <DropdownMenuItem onSelect={openFilePicker}>
-            Change {label}
+            Change {normalizedLabel}
           </DropdownMenuItem>
-          <DropdownMenuItem variant="destructive" onSelect={removeCoverPicture}>
-            Remove {label}
+          <DropdownMenuItem variant="destructive" onSelect={removePicture}>
+            Remove {normalizedLabel}
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
       <input
-        id="avatar"
+        id={inputId}
         ref={inputRef}
         type="file"
         accept="image/*"

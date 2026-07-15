@@ -1,11 +1,11 @@
 import { type PlatformName, SOCIAL_MAP } from '@/constants';
 import type { MetadataFormValues } from '@/features/editor/schemas/metadataForm.schema';
+import { useState } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 
 import {
   Button,
   Dialog,
-  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -14,6 +14,7 @@ import {
   DialogTrigger,
   Input,
 } from '@/components/ui';
+import { Trash2 } from 'lucide-react';
 
 export const EditableSocialLinks = () => {
   const { control } = useFormContext<MetadataFormValues>();
@@ -26,12 +27,17 @@ export const EditableSocialLinks = () => {
       {socialLinks.map((link, index) => {
         if (!link.url) return null;
 
-        const platform = SOCIAL_MAP[link.platform as PlatformName];
+        const platformName = link.platform as PlatformName;
+        const platform = SOCIAL_MAP[platformName];
+
+        if (!platform) return null;
 
         return (
           <EditableSocialLink
             key={link.platform}
             index={index}
+            platform={platformName}
+            currentUrl={link.url}
             label={platform.label}
             icon={<platform.Icon className="size-6" />}
           />
@@ -43,25 +49,72 @@ export const EditableSocialLinks = () => {
 
 type EditableSocialLinkProps = {
   index: number;
+  platform: PlatformName;
+  currentUrl: string;
   label: string;
   icon: React.ReactNode;
 };
 
 const EditableSocialLink = ({
   index,
+  platform,
+  currentUrl,
   label,
   icon,
 }: EditableSocialLinkProps) => {
-  const { register, setValue } = useFormContext<MetadataFormValues>();
+  const [open, setOpen] = useState(false);
+  const [draftUrl, setDraftUrl] = useState('');
+  const [error, setError] = useState<string | null>(null);
+  const { setValue } = useFormContext<MetadataFormValues>();
+
+  const closeDialog = () => {
+    setOpen(false);
+    setDraftUrl('');
+    setError(null);
+  };
+
+  const handleSave = () => {
+    const normalizedUrl = draftUrl.trim();
+
+    if (!SOCIAL_MAP[platform].validateUrl(normalizedUrl)) {
+      setError(`Please enter a valid ${label} URL.`);
+      return;
+    }
+
+    setValue(`socialLinks.${index}.url`, normalizedUrl, {
+      shouldDirty: true,
+      shouldTouch: true,
+      shouldValidate: true,
+    });
+    closeDialog();
+  };
 
   const handleRemove = () => {
-    setValue(`socialLinks.${index}.url`, '');
+    setValue(`socialLinks.${index}.url`, '', {
+      shouldDirty: true,
+      shouldTouch: true,
+      shouldValidate: true,
+    });
+    closeDialog();
   };
 
   return (
-    <Dialog>
+    <Dialog
+      open={open}
+      onOpenChange={(nextOpen) => {
+        if (nextOpen) {
+          setDraftUrl(currentUrl);
+          setError(null);
+          setOpen(true);
+          return;
+        }
+
+        closeDialog();
+      }}
+    >
       <DialogTrigger asChild>
         <Button
+          type="button"
           variant="ghost"
           size="icon"
           className="text-foreground hover:text-primary cursor-pointer transition will-change-transform hover:bg-transparent active:scale-[0.98] active:shadow-inner"
@@ -80,17 +133,35 @@ const EditableSocialLink = ({
         </DialogHeader>
 
         <Input
+          type="url"
           placeholder={`Enter your ${label} URL`}
-          {...register(`socialLinks.${index}.url`)}
+          value={draftUrl}
+          onChange={(event) => {
+            setDraftUrl(event.target.value);
+            if (error) setError(null);
+          }}
+          onKeyDown={(event) => {
+            if (event.key === 'Enter') {
+              event.preventDefault();
+              handleSave();
+            }
+          }}
         />
+
+        {error && <p className="text-destructive text-sm">{error}</p>}
 
         <DialogFooter>
           <Button type="button" variant="destructive" onClick={handleRemove}>
+            <Trash2 />
             Remove
           </Button>
-          <DialogClose asChild>
-            <Button type="button">Done</Button>
-          </DialogClose>
+          <Button
+            type="button"
+            onClick={handleSave}
+            disabled={!draftUrl.trim()}
+          >
+            Done
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

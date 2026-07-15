@@ -289,15 +289,63 @@
   background-clip: padding-box;
 }
 
-@media (min-width: 64rem) and (min-height: 44rem) {
-  .profile-page {
-    height: 100dvh;
-    min-height: 0;
-    overflow: hidden;
+.profile-viewport {
+  container-name: profile;
+  container-type: inline-size;
+}
+
+@container profile (min-width: 64rem) {
+  .profile-layout {
+    grid-template-columns: minmax(0, 1fr) minmax(22rem, 1.15fr);
+    grid-template-rows: 1fr auto;
+    column-gap: 3rem;
+    row-gap: 0;
+    padding-inline: 2rem;
   }
 
-  .profile-layout {
-    height: 100%;
+  .profile-summary {
+    grid-column: 1;
+    grid-row: 1;
+    padding-top: clamp(2rem, calc(100dvh - 46rem), 6rem);
+  }
+
+  .profile-links-panel {
+    grid-column: 2;
+    grid-row: 1 / span 2;
     min-height: 0;
+    margin-top: clamp(2rem, calc(100dvh - 46rem), 6rem);
+    overflow-y: auto;
+    overscroll-behavior: none;
+    align-self: stretch;
+  }
+
+  .profile-branding {
+    grid-column: 1;
+    grid-row: 2;
+    align-self: end;
+    text-align: left;
+  }
+}
+
+@container profile (min-width: 80rem) {
+  .profile-layout {
+    grid-template-columns: 29.375rem 34.625rem;
+    column-gap: 4rem;
+    padding-inline: 0;
+  }
+}
+
+@media (min-height: 44rem) {
+  @container profile (min-width: 64rem) {
+    .profile-page {
+      height: 100dvh;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .profile-layout {
+      height: 100%;
+      min-height: 0;
+    }
   }
 }

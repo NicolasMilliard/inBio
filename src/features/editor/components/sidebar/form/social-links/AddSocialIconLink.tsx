@@ -114,6 +114,7 @@ export const AddSocialIconLink = () => {
               autoFocus
               onKeyDown={(e) => {
                 if (e.key === 'Enter') {
+                  e.preventDefault();
                   handleConfirm();
                 }
               }}

@@ -1,23 +1,18 @@
-import { useEditorContext } from '@/features/editor/context/editor.context';
-
 import { SidebarGroup, SidebarGroupLabel } from '@/components/ui';
 import { PictureController, ThemeSelector } from './form';
 
 export const AppearanceGroup = () => {
-  const { account, threeBioMetadata } = useEditorContext();
-  const coverPicturePath =
-    threeBioMetadata.profile?.coverPicture ?? account.metadata?.coverPicture;
-
   return (
     <SidebarGroup>
       <SidebarGroupLabel className="pl-0 tracking-wider">
-        Appearance
+        Appearance &amp; sharing
       </SidebarGroupLabel>
       <div className="flex flex-col gap-4">
         <ThemeSelector />
         <PictureController
-          picturePath={coverPicturePath}
           formValue="coverPicture"
+          label="Social share image"
+          description="Used for Open Graph and X/Twitter previews. It is not displayed on your profile."
         />
       </div>
     </SidebarGroup>

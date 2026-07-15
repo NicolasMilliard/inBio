@@ -96,6 +96,7 @@ export const AddButtonLink = () => {
             }}
             onKeyDown={(e) => {
               if (e.key === 'Enter') {
+                e.preventDefault();
                 handleAdd();
               }
             }}

@@ -1,20 +1,12 @@
-import { THREE_BIO_DEFAULT_THEME } from '@/constants';
 import { formatToThreeBioMetadata } from '@/helpers';
 import type { Account, AccountStats } from '@lens-protocol/react';
 
 import { SidebarTrigger } from '@/components/ui';
 import {
-  BrandingSection,
-  CoverPictureSection,
   EditorForm,
   EditorProfilePreview,
-  IdentitySection,
-  LinksSection,
   SidebarEditor,
-  SocialLinksSection,
-  StatisticsSection,
 } from '@/features/editor/components';
-import { EditorProvider } from '../context/editor.context';
 
 export const EditorScreen = ({
   account,
@@ -31,36 +23,20 @@ export const EditorScreen = ({
   };
 
   return (
-    <EditorProvider value={{ account, stats, threeBioMetadata }}>
-      <EditorForm>
-        <div className="flex h-dvh w-dvw">
-          <SidebarEditor />
-          <main className="mx-auto flex w-full flex-1 flex-col">
-            <SidebarTrigger
-              type="button"
-              className="bg-card fixed top-5 z-10 ml-2"
-            />
-            <div className="flex w-full flex-1 items-center justify-center">
-              <CoverPictureSection />
-
-              <EditorProfilePreview
-                defaultTheme={
-                  threeBioMetadata?.theme?.name ?? THREE_BIO_DEFAULT_THEME
-                }
-              >
-                <IdentitySection
-                  lensHandle={account.username?.localName ?? ''}
-                  profile={threeBioMetadata?.profile}
-                />
-                <StatisticsSection {...statsData} />
-                <SocialLinksSection />
-                <LinksSection />
-                <BrandingSection />
-              </EditorProfilePreview>
-            </div>
-          </main>
-        </div>
-      </EditorForm>
-    </EditorProvider>
+    <EditorForm account={account} threeBioMetadata={threeBioMetadata}>
+      <div className="flex h-dvh w-dvw overflow-hidden">
+        <SidebarEditor />
+        <main className="flex min-w-0 flex-1 overflow-y-auto">
+          <SidebarTrigger
+            type="button"
+            className="bg-card/90 fixed top-4 right-4 z-30 shadow-sm backdrop-blur"
+          />
+          <EditorProfilePreview
+            lensHandle={account.username?.localName ?? ''}
+            statistics={statsData}
+          />
+        </main>
+      </div>
+    </EditorForm>
   );
 };

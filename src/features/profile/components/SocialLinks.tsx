@@ -4,7 +4,15 @@ import type { LensLink } from '@/schemas/threeBioMetadata.schema';
 
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui';
 
-export const SocialLinks = ({ socialLinks }: { socialLinks?: LensLink[] }) => {
+export const SocialLinks = ({
+  socialLinks,
+  interactive = true,
+}: {
+  socialLinks?: (Pick<LensLink, 'key' | 'value'> & {
+    platform?: PlatformName;
+  })[];
+  interactive?: boolean;
+}) => {
   if (!socialLinks || socialLinks.length === 0) return null;
 
   return (
@@ -12,10 +20,23 @@ export const SocialLinks = ({ socialLinks }: { socialLinks?: LensLink[] }) => {
       {socialLinks.map((socialLink) => {
         const formattedSocialLink = formatSocialLink(socialLink);
         const platform = formattedSocialLink.platform
-          ? SOCIAL_MAP[formattedSocialLink.platform as PlatformName]
+          ? SOCIAL_MAP[formattedSocialLink.platform]
           : null;
 
         if (!platform) return null;
+
+        if (!interactive) {
+          return (
+            <span
+              key={socialLink.key}
+              className="text-icons flex size-10 animate-[blurFadeIn_0.4s_ease-out_0.60s_both] items-center justify-center rounded-full motion-reduce:animate-none"
+              role="img"
+              aria-label={platform.label}
+            >
+              <platform.Icon className="size-6" />
+            </span>
+          );
+        }
 
         return (
           <Tooltip key={socialLink.key}>
@@ -24,7 +45,7 @@ export const SocialLinks = ({ socialLinks }: { socialLinks?: LensLink[] }) => {
                 href={socialLink.value}
                 target="_blank"
                 rel="ugc noopener noreferrer"
-                className="text-icons hover:text-icons/60 focus-visible:ring-icons flex size-10 animate-[blurFadeIn_0.4s_ease-out_0.60s_both] items-center justify-center rounded-full transition motion-reduce:animate-none focus-visible:ring-2 focus-visible:outline-none"
+                className="text-icons hover:text-icons/60 focus-visible:ring-icons flex size-10 animate-[blurFadeIn_0.4s_ease-out_0.60s_both] items-center justify-center rounded-full transition focus-visible:ring-2 focus-visible:outline-none motion-reduce:animate-none"
                 aria-label={platform.label}
               >
                 <platform.Icon className="size-6" />

@@ -31,11 +31,11 @@ export const UnsavedChangesDialog = ({
         </DialogHeader>
 
         <DialogFooter>
-          <Button variant="outline" onClick={onCancel}>
+          <Button type="button" variant="outline" onClick={onCancel}>
             Cancel
           </Button>
 
-          <Button variant="destructive" onClick={onConfirm}>
+          <Button type="button" variant="destructive" onClick={onConfirm}>
             Discard
           </Button>
         </DialogFooter>

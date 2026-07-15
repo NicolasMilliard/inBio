@@ -1,12 +1,11 @@
 import type { MetadataFormValues } from '@/features/editor/schemas/metadataForm.schema';
-import { formatUrlLabel } from '@/helpers';
+import { formatUrlLabel, isValidUrl } from '@/helpers';
 import { useState } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 
 import {
   Button,
   Dialog,
-  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -21,27 +20,15 @@ import { Trash2 } from 'lucide-react';
 
 export const EditableButtonLinks = () => {
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
+  const [draftValue, setDraftValue] = useState('');
   const [error, setError] = useState<string | null>(null);
 
   const { control, setValue } = useFormContext<MetadataFormValues>();
   const links = useWatch({ control, name: 'links' });
 
-  const draftValue = editingIndex !== null ? (links?.[editingIndex] ?? '') : '';
-
-  const isValidUrl = () => {
-    if (!draftValue.trim()) return false;
-
-    try {
-      new URL(draftValue);
-
-      return true;
-    } catch {
-      return false;
-    }
-  };
-
   const closeDialog = () => {
     setEditingIndex(null);
+    setDraftValue('');
     setError(null);
   };
 
@@ -50,7 +37,7 @@ export const EditableButtonLinks = () => {
 
     const normalizedUrl = draftValue.trim();
 
-    if (!isValidUrl) {
+    if (!isValidUrl(normalizedUrl)) {
       setError('Please enter a valid URL.');
 
       return;
@@ -93,13 +80,18 @@ export const EditableButtonLinks = () => {
           onOpenChange={(open) => {
             if (open) {
               setEditingIndex(index);
+              setDraftValue(link);
               return;
             }
             closeDialog();
           }}
         >
           <DialogTrigger asChild>
-            <LinkButton label={formatUrlLabel(link)} className="mb-4" />
+            <LinkButton
+              as="button"
+              label={formatUrlLabel(link)}
+              className="mb-4"
+            />
           </DialogTrigger>
 
           <DialogContent>
@@ -117,17 +109,7 @@ export const EditableButtonLinks = () => {
                 placeholder="https://example.com"
                 value={draftValue}
                 onChange={(e) => {
-                  const next = e.target.value;
-                  const nextLinks = [...links];
-
-                  if (editingIndex !== null) {
-                    nextLinks[editingIndex] = next;
-
-                    setValue('links', nextLinks, {
-                      shouldDirty: true,
-                      shouldTouch: true,
-                    });
-                  }
+                  setDraftValue(e.target.value);
 
                   if (error) {
                     setError(null);
@@ -136,6 +118,7 @@ export const EditableButtonLinks = () => {
                 autoFocus
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') {
+                    e.preventDefault();
                     updateLink();
                   }
                 }}
@@ -146,16 +129,10 @@ export const EditableButtonLinks = () => {
             </div>
 
             <DialogFooter>
-              <DialogClose asChild>
-                <Button
-                  type="button"
-                  variant="destructive"
-                  onClick={removeLink}
-                >
-                  <Trash2 />
-                  Remove
-                </Button>
-              </DialogClose>
+              <Button type="button" variant="destructive" onClick={removeLink}>
+                <Trash2 />
+                Remove
+              </Button>
 
               <Button
                 type="button"

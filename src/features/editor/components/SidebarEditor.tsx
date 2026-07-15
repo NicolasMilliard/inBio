@@ -37,7 +37,9 @@ export const SidebarEditor = () => {
         <DisplayGroup />
       </SidebarContent>
       <SidebarFooter className="border-foreground/40 border-t py-3">
-        <Button type="submit">Save Changes</Button>
+        <Button type="submit" form="profile-editor-form">
+          Save Changes
+        </Button>
       </SidebarFooter>
     </Sidebar>
   );

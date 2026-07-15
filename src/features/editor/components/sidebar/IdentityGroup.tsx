@@ -1,5 +1,4 @@
 import { useFormContext } from 'react-hook-form';
-import { useEditorContext } from '../../context/editor.context';
 import type { MetadataFormValues } from '../../schemas/metadataForm.schema';
 
 import {
@@ -13,17 +12,13 @@ import {
 import { PictureController } from './form';
 
 export const IdentityGroup = () => {
-  const { account, threeBioMetadata } = useEditorContext();
-  const avatarPath =
-    threeBioMetadata.profile?.avatar ?? account.metadata?.picture;
-
   return (
     <SidebarGroup>
       <SidebarGroupLabel className="pl-0 tracking-wider">
         Identity
       </SidebarGroupLabel>
       <div className="flex flex-col gap-4">
-        <PictureController picturePath={avatarPath} formValue="avatar" />
+        <PictureController formValue="avatar" label="Avatar" />
         <NameInput />
         <BioInput />
       </div>
@@ -33,27 +28,17 @@ export const IdentityGroup = () => {
 
 const NameInput = () => {
   const { register } = useFormContext<MetadataFormValues>();
-  const { account, threeBioMetadata } = useEditorContext();
-  const name = account.metadata?.name;
-  const threeBioName = threeBioMetadata.profile?.name;
 
   return (
     <FieldSet className="gap-2">
       <Label htmlFor="name">Name</Label>
-      <Input
-        id="name"
-        {...register('name')}
-        placeholder={threeBioName ?? name ?? 'Your name'}
-      />
+      <Input id="name" {...register('name')} placeholder="Your name" />
     </FieldSet>
   );
 };
 
 const BioInput = () => {
   const { register } = useFormContext<MetadataFormValues>();
-  const { account, threeBioMetadata } = useEditorContext();
-  const bio = account.metadata?.bio;
-  const threeBioBio = threeBioMetadata.profile?.bio;
 
   return (
     <FieldSet className="gap-2">
@@ -62,7 +47,6 @@ const BioInput = () => {
         id="bio"
         {...register('bio')}
         rows={1}
-        defaultValue={threeBioBio ?? bio ?? undefined}
         placeholder="Write something about yourself in your bio to let people know more about you."
       />
     </FieldSet>

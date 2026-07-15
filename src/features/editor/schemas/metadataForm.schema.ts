@@ -16,8 +16,6 @@ export const socialLinkSchema = z.object({
   url: optionalHttpUrl,
 });
 
-export type SocialLink = z.infer<typeof socialLinkSchema>;
-
 export const metadataFormSchema = z.object({
   avatar: z.object({
     file: z.instanceof(File).optional(),

@@ -1,17 +1,36 @@
-import type { PlatformName } from '@/constants';
+import { SOCIAL_MAP, type PlatformName } from '@/constants';
 import type { LensLink } from '@/schemas/threeBioMetadata.schema';
 import { getHostname } from './getHostname';
 
-export type SocialLink = {
+type SocialLink = {
   key: string;
-  platform: PlatformName;
+  platform?: PlatformName;
   value: string;
 };
 
-export const formatSocialLink = (link: LensLink) => {
+export const formatSocialLink = (
+  link: Pick<LensLink, 'key' | 'value'> & { platform?: PlatformName },
+): SocialLink => {
+  const storedPlatform = link.key.startsWith('socialLinks.')
+    ? link.key.slice('socialLinks.'.length)
+    : undefined;
   const hostname = getHostname(link.value);
   const hostnamePlatform = hostname?.replace(/^www\./, '').split('.')[0];
-  const platform = hostnamePlatform === 'x' ? 'twitter' : hostnamePlatform;
+  const inferredPlatform =
+    hostnamePlatform === 'x'
+      ? 'twitter'
+      : hostnamePlatform === 'bsky'
+        ? 'bluesky'
+        : hostnamePlatform;
+  const isPlatformName = (value?: string): value is PlatformName =>
+    !!value && value in SOCIAL_MAP;
+  const platform = isPlatformName(link.platform)
+    ? link.platform
+    : isPlatformName(storedPlatform)
+      ? storedPlatform
+      : isPlatformName(inferredPlatform)
+        ? inferredPlatform
+        : undefined;
 
   return {
     key: link.key,
