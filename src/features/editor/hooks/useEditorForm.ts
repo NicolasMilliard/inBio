@@ -3,15 +3,25 @@ import { lensAccountOnly, StorageClient } from '@lens-chain/storage-client';
 import { setAccountMetadata } from '@lens-protocol/client/actions';
 import { handleOperationWith } from '@lens-protocol/client/viem';
 import { MetadataAttributeType } from '@lens-protocol/metadata';
-import { uri, useSessionClient, type Account } from '@lens-protocol/react';
-import { useWalletClient } from 'wagmi';
+import { uri, type Account } from '@lens-protocol/react';
+import {
+  getConnection,
+  getWalletClient,
+  switchChain,
+} from '@wagmi/core';
+import { useConfig } from 'wagmi';
 
 import { SOCIAL_MAP, THREE_BIO_DEFAULT_THEME } from '@/constants';
+import {
+  resolveAccountSessionBinding,
+  type AccountSessionBindingState,
+} from '@/features/auth/sessionBinding';
 import {
   formatMetadataBeforeUpload,
   formatSocialLink,
   getHostname,
 } from '@/helpers';
+import { client } from '@/lib';
 import type { ThreeBioMetadata } from '@/schemas/threeBioMetadata.schema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -79,8 +89,7 @@ export function useEditorForm(
   account: Account,
   threeBioMetadata: ThreeBioMetadata,
 ) {
-  const { data: sessionClient } = useSessionClient();
-  const { data: walletClient } = useWalletClient();
+  const config = useConfig();
   const acl = lensAccountOnly(account.address, chains.mainnet.id);
 
   const methods = useForm<MetadataFormValues>({
@@ -88,11 +97,79 @@ export function useEditorForm(
     defaultValues: buildDefaultValues(threeBioMetadata),
   });
 
+  const getCurrentEditorSession = () => {
+    const connection = getConnection(config);
+    const currentSession = client.currentSession;
+    const authenticatedUser = currentSession.isSessionClient()
+      ? currentSession.getAuthenticatedUser().unwrapOr(null)
+      : null;
+    const state = resolveAccountSessionBinding({
+      walletStatus: connection.status,
+      walletAddress: connection.address,
+      lensLoading: false,
+      session: authenticatedUser,
+      accountAddress: account.address,
+    });
+
+    return {
+      authenticatedUser,
+      connection,
+      sessionClient:
+        state === 'bound' && currentSession.isSessionClient()
+          ? currentSession
+          : null,
+      state,
+    };
+  };
+
+  const showSessionError = (
+    state: AccountSessionBindingState,
+    toastId?: string | number,
+  ) => {
+    const messages: Record<
+      AccountSessionBindingState,
+      { title: string; description: string }
+    > = {
+      pending: {
+        title: 'Wallet connection is updating',
+        description: 'Wait for your wallet to finish reconnecting, then save.',
+      },
+      'wallet-disconnected': {
+        title: 'Wallet disconnected',
+        description:
+          'Reconnect the wallet that manages this Lens profile before saving.',
+      },
+      'session-missing': {
+        title: 'Lens session expired',
+        description: 'Sign in to your Lens profile again before saving.',
+      },
+      mismatch: {
+        title: 'Different wallet connected',
+        description:
+          'Switch back to the wallet that manages this Lens profile.',
+      },
+      'account-mismatch': {
+        title: 'Lens profile changed',
+        description: 'Switch back to this Lens profile before saving its draft.',
+      },
+      bound: {
+        title: 'Wallet session changed',
+        description: 'Check your wallet connection and try again.',
+      },
+    };
+
+    const message = messages[state];
+    toast.error(message.title, {
+      id: toastId,
+      description: message.description,
+    });
+  };
+
   const onSubmit = async (values: MetadataFormValues) => {
-    if (!sessionClient) {
-      toast.error('Not connected', {
-        description: 'Please connect your wallet to update your profile.',
-      });
+    const initialSession = getCurrentEditorSession();
+
+    if (!initialSession.sessionClient) {
+      showSessionError(initialSession.state);
       return;
     }
 
@@ -141,16 +218,145 @@ export function useEditorForm(
       // Step 4: Submit on-chain
       toast.loading('Waiting for transaction...', { id: toastId });
 
-      const result = await setAccountMetadata(sessionClient, {
-        metadataUri: uri(metadataUri),
-      }).andThen(handleOperationWith(walletClient));
+      const transactionSession = getCurrentEditorSession();
 
-      if (result.isErr()) {
+      if (
+        !transactionSession.sessionClient ||
+        !transactionSession.authenticatedUser
+      ) {
+        showSessionError(transactionSession.state, toastId);
+        return;
+      }
+
+      const operation = await setAccountMetadata(
+        transactionSession.sessionClient,
+        {
+          metadataUri: uri(metadataUri),
+        },
+      );
+
+      if (operation.isErr()) {
         toast.error('Transaction failed', {
           id: toastId,
-          description: result.error.message ?? 'An error occurred.',
+          description: operation.error.message ?? 'An error occurred.',
         });
         return;
+      }
+
+      const operationResult = operation.value;
+
+      if ('reason' in operationResult) {
+        toast.error('Transaction failed', {
+          id: toastId,
+          description: operationResult.reason,
+        });
+        return;
+      }
+
+      if (!('hash' in operationResult)) {
+        const signingConnection = getConnection(config);
+
+        if (signingConnection.status !== 'connected') {
+          showSessionError(
+            resolveAccountSessionBinding({
+              walletStatus: signingConnection.status,
+              walletAddress: signingConnection.address,
+              lensLoading: false,
+              session: transactionSession.authenticatedUser,
+              accountAddress: account.address,
+            }),
+            toastId,
+          );
+          return;
+        }
+
+        if (signingConnection.chainId !== chains.mainnet.id) {
+          toast.loading('Switch your wallet to Lens...', { id: toastId });
+
+          try {
+            await switchChain(config, {
+              chainId: chains.mainnet.id,
+              connector: signingConnection.connector,
+            });
+          } catch {
+            toast.error('Lens network required', {
+              id: toastId,
+              description:
+                'Switch your wallet to the Lens network to complete this save.',
+            });
+            return;
+          }
+        }
+
+        const signingSession = getCurrentEditorSession();
+
+        if (
+          !signingSession.sessionClient ||
+          !signingSession.authenticatedUser ||
+          signingSession.connection.status !== 'connected'
+        ) {
+          showSessionError(signingSession.state, toastId);
+          return;
+        }
+
+        if (
+          signingSession.authenticatedUser.authenticationId !==
+          transactionSession.authenticatedUser.authenticationId
+        ) {
+          toast.error('Lens session changed', {
+            id: toastId,
+            description: 'Your profile changed before the transaction was sent.',
+          });
+          return;
+        }
+
+        const walletClient = await getWalletClient(config, {
+          account: signingSession.connection.address,
+          assertChainId: true,
+          chainId: chains.mainnet.id,
+          connector: signingSession.connection.connector,
+        });
+
+        const finalSession = getCurrentEditorSession();
+
+        if (
+          !finalSession.sessionClient ||
+          !finalSession.authenticatedUser ||
+          finalSession.connection.status !== 'connected'
+        ) {
+          showSessionError(finalSession.state, toastId);
+          return;
+        }
+
+        if (
+          finalSession.authenticatedUser.authenticationId !==
+          transactionSession.authenticatedUser.authenticationId
+        ) {
+          toast.error('Lens session changed', {
+            id: toastId,
+            description: 'Your profile changed before the transaction was sent.',
+          });
+          return;
+        }
+
+        if (finalSession.connection.chainId !== chains.mainnet.id) {
+          toast.error('Lens network required', {
+            id: toastId,
+            description:
+              'Switch your wallet back to the Lens network and try again.',
+          });
+          return;
+        }
+
+        const result = await handleOperationWith(walletClient)(operationResult);
+
+        if (result.isErr()) {
+          toast.error('Transaction failed', {
+            id: toastId,
+            description: result.error.message ?? 'An error occurred.',
+          });
+          return;
+        }
       }
 
       methods.reset({

@@ -7,7 +7,13 @@ import { ProfileCard } from './ProfileCard';
 
 import { Spinner, Text } from '@/components/ui';
 
-export const ProfileSelectionScreen = () => {
+type ProfileSelectionScreenProps = {
+  notice?: string;
+};
+
+export const ProfileSelectionScreen = ({
+  notice,
+}: ProfileSelectionScreenProps) => {
   const connection = useConnection();
   const { data: accounts, loading } = useAccountsAvailable({
     managedBy: connection.address,
@@ -22,6 +28,7 @@ export const ProfileSelectionScreen = () => {
           Select the profile you want to use. You can switch later from your
           dashboard.
         </Text>
+        {notice ? <Text className="text-destructive">{notice}</Text> : null}
       </div>
 
       {loading && (

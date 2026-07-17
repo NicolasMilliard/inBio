@@ -1,54 +1,64 @@
-import { client } from '@/lib';
-import { useAuthenticatedUser } from '@lens-protocol/react';
+import { useSessionBinding } from '@/features/auth/hooks/useSessionBinding';
+import { useLogout } from '@lens-protocol/react';
 import { useEffect, useRef, useState } from 'react';
+import { AuthSessionContext } from './authSessionContext';
 
-/*
- * Silently resumes a Lens session from localStorage on mount.
- * No wallet signature is ever triggered here: that only happens
- * when the user explicitly picks a profile in AuthButton.
- */
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const { data: authenticatedUser, loading } = useAuthenticatedUser();
+  const { state, authenticatedUser, walletAddress } = useSessionBinding();
+  const { execute: logout } = useLogout();
+  const attemptedMismatchRef = useRef<string | null>(null);
+  const [failedMismatchKey, setFailedMismatchKey] = useState<string | null>(
+    null,
+  );
 
-  const [resumeAttempted, setResumeAttempted] = useState(false);
-  const resumingRef = useRef(false);
+  const mismatchKey =
+    state === 'mismatch' && authenticatedUser
+      ? `${authenticatedUser.authenticationId}:${walletAddress?.toLowerCase()}`
+      : null;
 
   useEffect(() => {
-    // Only attempt once, and only if not already authenticated
-    if (resumeAttempted || resumingRef.current) return;
-    if (loading) return; // wait for the SDK to finish its own hydration check
-
-    // If the SDK already picked up the session (e.g. from its internal storage
-    // layer), there's nothing to do.
-    if (authenticatedUser) {
-      setResumeAttempted(true);
+    if (!mismatchKey) {
+      attemptedMismatchRef.current = null;
       return;
     }
 
-    // No active session in SDK memory: try to resume from localStorage tokens
-    const tryResume = async () => {
-      resumingRef.current = true;
+    if (attemptedMismatchRef.current === mismatchKey) return;
+
+    attemptedMismatchRef.current = mismatchKey;
+
+    const clearMismatchedSession = async () => {
       try {
-        const resumed = await client.resumeSession();
-        if (resumed.isErr()) {
-          // Tokens expired or missing: user must log in again manually
-          console.info(
-            '[AuthProvider] No valid session to resume:',
-            resumed.error,
+        const result = await logout();
+
+        if (result.isErr()) {
+          console.error(
+            '[AuthProvider] Failed to clear mismatched Lens session:',
+            result.error,
           );
+          setFailedMismatchKey(mismatchKey);
+          return;
         }
-        // On success, the SDK internally updates its state and
-        // useAuthenticatedUser / useSessionClient will reflect the session.
       } catch (error) {
-        console.error('[AuthProvider] resumeSession threw:', error);
-      } finally {
-        resumingRef.current = false;
-        setResumeAttempted(true);
+        console.error(
+          '[AuthProvider] Clearing mismatched Lens session threw:',
+          error,
+        );
+        setFailedMismatchKey(mismatchKey);
       }
     };
 
-    tryResume();
-  }, [loading, authenticatedUser, resumeAttempted]);
+    void clearMismatchedSession();
+  }, [logout, mismatchKey]);
 
-  return <>{children}</>;
+  const reconciliationState = mismatchKey
+    ? failedMismatchKey === mismatchKey
+      ? 'failed'
+      : 'clearing'
+    : 'idle';
+
+  return (
+    <AuthSessionContext.Provider value={reconciliationState}>
+      {children}
+    </AuthSessionContext.Provider>
+  );
 };

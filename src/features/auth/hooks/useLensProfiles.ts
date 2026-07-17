@@ -5,6 +5,7 @@ import {
   useAuthenticatedUser,
 } from '@lens-protocol/react';
 import { useConnection } from 'wagmi';
+import { isLensSessionBoundToWallet } from '../sessionBinding';
 
 type LensProfile = {
   accountAvailable: AccountAvailable;
@@ -26,7 +27,12 @@ export const useLensProfiles = () => {
     managedBy: connection.address,
   });
 
-  const activeAddress = authenticatedUser?.address.toLowerCase();
+  const activeAddress = isLensSessionBoundToWallet(
+    authenticatedUser,
+    connection.address,
+  )
+    ? authenticatedUser?.address.toLowerCase()
+    : undefined;
 
   const profiles: LensProfile[] =
     accounts?.items.map((item) => {
